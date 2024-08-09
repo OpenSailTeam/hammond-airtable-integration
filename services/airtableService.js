@@ -29,25 +29,25 @@ exports.syncQueueToExternalServices = async () => {
     for (let item of queueItems) {
         try {
             // Fetch the latest record data from Airtable
-            const payload = await airtableService.listWebhookPayloads(item.webhook.id);
-            console.log("Payload:")
-            console.log(payload);
+            const payloads = await airtableService.listWebhookPayloads(item);
+            console.log("Payloads:")
+            console.log(payloads);
 
             // Transform and sync to Webflow
-            // await webflowService.syncToWebflow(record);
+            // await webflowService.syncToWebflow(payloads);
 
             // Transform and sync to Google Ads
-            // await googleAdsService.syncToGoogleAds(record);
+            // await googleAdsService.syncToGoogleAds(payloads);
 
             // Log successful sync
-            // logger.log('info', `Successfully synced record ${item.id} to Webflow and Google Ads`);
+            // logger.log('info', `Successfully sent payload ${item.webhook.id} to Webflow and Google Ads`);
 
         } catch (error) {
             // Log the error
-            // logger.log('error', `Error syncing record ${item.id}: ${error.message}`);
+            // logger.log('error', `Error syncing record ${item.webhook.id}: ${error.message}`);
 
             // Throw the error to be caught by the publish handler
-            // throw new Error(`Failed to sync record ${item.id}: ${error.message}`);
+            // throw new Error(`Failed to sync record ${item.webhook.id}: ${error.message}`);
         }
     }
     // Clear the queue after processing
@@ -86,3 +86,28 @@ exports.listWebhookPayloads = async (id) => {
       console.error('Error creating webhook:', error.response ? error.response.data : error.message);
     }
   };
+
+  exports.updateAirtableWithWebflowItemId = async (recordId, webflowItemId) => {
+    const baseId = 'your_base_id';  // Replace with your Airtable base ID
+    const tableIdOrName = 'your_table_id_or_name';  // Replace with your Airtable table ID or name
+    const fieldId = 'fldsSdgGBKmG3Stvi';  // Webflow Item ID field ID
+  
+    const url = `https://api.airtable.com/v0/${baseId}/${tableIdOrName}/${recordId}`;
+    const headers = {
+      'Authorization': `Bearer your_airtable_api_key`,  // Replace with your Airtable API key
+      'Content-Type': 'application/json'
+    };
+    
+    const data = {
+      fields: {
+        [fieldId]: webflowItemId
+      }
+    };
+  
+    try {
+      const response = await axios.patch(url, data, { headers });
+      console.log('Airtable record updated successfully:', response.data);
+    } catch (error) {
+      console.error('Error updating Airtable record:', error.response ? error.response.data : error.message);
+    }
+  }
