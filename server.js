@@ -13,8 +13,8 @@ app.use('/airtable', airtableRoutes);
 
 // SSL Configuration
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/hammond.api.opensail.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/hammond.api.opensail.com/fullchain.pem')
 };
 
 // Start HTTPS server

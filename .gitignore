@@ -131,3 +131,5 @@ dist
 
 key.pem
 cert.pem
+privkey.pem
+fullchain.pem
