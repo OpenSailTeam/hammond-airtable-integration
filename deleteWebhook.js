@@ -1,5 +1,5 @@
 const webhookService = require('./services/webhookService');
 
 (async () => {
-  await webhookService.deleteWebhook("achDLBoRIjD2mQjmH");
+  await webhookService.deleteWebhook("achswFDWmA3V4W3MU");
 })();
