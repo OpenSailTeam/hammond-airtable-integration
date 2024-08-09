@@ -45,9 +45,8 @@ exports.syncQueueToExternalServices = async () => {
         } catch (error) {
             // Log the error
             // logger.log('error', `Error syncing record ${item.webhook.id}: ${error.message}`);
-
-            // Throw the error to be caught by the publish handler
-            // throw new Error(`Failed to sync record ${item.webhook.id}: ${error.message}`);
+            
+            throw new Error(`Failed to sync record ${item.webhook.id}: ${error.message}`);
         }
     }
     // Clear the queue after processing

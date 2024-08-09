@@ -2,7 +2,7 @@ const airtableService = require('../services/airtableService');
 
 exports.handleWebhook = async (req, res) => {
     try {
-        const { id } = req.body.webhook; // Adjusted to access the nested id
+        const { id } = req.body.webhook;
         console.log("handleWebhook:");
         console.log(id);
         await airtableService.addToQueue(id);
