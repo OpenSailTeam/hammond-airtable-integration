@@ -7,12 +7,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 exports.addToQueue = async (id) => {
-    // Check if the id already exists in the queue
-    const exists = queue.some(item => item.id === id);
-
-    if (!exists) {
-        queue.push({ id });
-    }
+    queue.push({ id });
 };
 
 exports.getQueue = () => {
