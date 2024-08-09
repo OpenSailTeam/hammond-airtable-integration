@@ -15,6 +15,7 @@ exports.handleWebhook = async (req, res) => {
 };
 
 exports.handlePublish = async (req, res) => {
+    console.log("Test2");
     try {
         // Initiate the sync process
         await airtableService.syncQueueToExternalServices();

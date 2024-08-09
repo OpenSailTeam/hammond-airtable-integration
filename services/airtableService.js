@@ -25,11 +25,15 @@ exports.getRecordById = async (id) => {
 };
 
 exports.syncQueueToExternalServices = async () => {
+  console.log("Test3");
     const queueItems = queue.getAll();
+    console.log(queueItems);
     for (let item of queueItems) {
+      console.log("Test5");
         try {
             // Fetch the latest record data from Airtable
-            const payloads = await airtableService.listWebhookPayloads(item);
+            console.log(item.id);
+            const payloads = await airtableService.listWebhookPayloads(item.id);
             console.log("Payloads:")
             console.log(payloads);
 
@@ -54,24 +58,10 @@ exports.syncQueueToExternalServices = async () => {
 };
 
 exports.listWebhookPayloads = async (id) => {
+  console.log("Test1");
     try {
       const response = await axios.post(
         `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads`,
-        {
-          notificationUrl: "https://34.136.105.159:3000/airtable/webhook",
-          specification: {
-              options: {
-                filters: {
-                    fromSources: ['client'],
-                    dataTypes: ['tableData'],
-                    recordChangeScope: `${process.env.AIRTABLE_TABLE_ID}`
-                },
-                includes: {
-                  includeCellValuesInFieldIds: ["fldsSdgGBKmG3Stvi"]
-                }
-              }
-          }
-        },
         {
           headers: {
             Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
