@@ -2,6 +2,12 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 
+// Middleware to log incoming requests
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url} from ${req.ip}`);
+    next();
+});
+
 // Middleware
 app.use(express.json());
 
