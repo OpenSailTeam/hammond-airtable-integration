@@ -6,7 +6,7 @@ exports.createWebhook = async () => {
     const response = await axios.post(
       `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks`,
       {
-        notificationUrl: "https://34.122.33.167:3000/airtable/webhook",
+        notificationUrl: "https://hammond.api.opensail.com:3000/airtable/webhook",
         specification: {
             options: {
               filters: {
