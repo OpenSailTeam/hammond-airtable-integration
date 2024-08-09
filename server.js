@@ -1,5 +1,4 @@
-const https = require('https');
-const fs = require('fs');
+const http = require('http');
 const express = require('express');
 const app = express();
 require('dotenv').config();
@@ -11,14 +10,8 @@ app.use(express.json());
 const airtableRoutes = require('./routes/airtableRoutes');
 app.use('/airtable', airtableRoutes);
 
-// SSL Configuration
-const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/hammond.api.opensail.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/hammond.api.opensail.com/fullchain.pem')
-};
-
-// Start HTTPS server
-const PORT = process.env.PORT || 443;
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`HTTPS Server is running on port ${PORT}`);
+// Start HTTP server
+const PORT = process.env.PORT || 3000;
+http.createServer(app).listen(PORT, () => {
+    console.log(`HTTP Server is running on port ${PORT}`);
 });
