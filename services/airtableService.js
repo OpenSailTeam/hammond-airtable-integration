@@ -6,8 +6,6 @@ const logger = require('../utils/logger');
 const axios = require('axios');
 require('dotenv').config();
 
-const queue = [];
-
 exports.addToQueue = async (id) => {
     // Check if the id already exists in the queue
     const exists = queue.some(item => item.id === id);
