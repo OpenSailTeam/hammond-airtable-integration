@@ -1,23 +1,24 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const app = express();
 require('dotenv').config();
-
-// Middleware to log incoming requests
-app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.url} from ${req.ip}`);
-    next();
-});
 
 // Middleware
 app.use(express.json());
 
 // Routes
 const airtableRoutes = require('./routes/airtableRoutes');
-
 app.use('/airtable', airtableRoutes);
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// SSL Configuration
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
+// Start HTTPS server
+const PORT = process.env.PORT || 443;
+https.createServer(options, app).listen(PORT, () => {
+    console.log(`HTTPS Server is running on port ${PORT}`);
 });
