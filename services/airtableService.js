@@ -59,9 +59,8 @@ exports.syncQueueToExternalServices = async () => {
 };
 
 exports.listWebhookPayloads = async (id) => {
-  console.log("Test1");
     try {
-      const response = await axios.post(
+      const response = await axios.get(
         `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads`,
         {
           headers: {
@@ -71,7 +70,7 @@ exports.listWebhookPayloads = async (id) => {
         }
       );
   
-      return response.data;
+      console.log('Payload:', response.data);
     } catch (error) {
       console.error('Error listing webhook payloads:', error.response ? error.response.data : error.message);
     }

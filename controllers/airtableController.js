@@ -5,11 +5,7 @@ exports.handleWebhook = async (req, res) => {
         const { id } = req.body.webhook;
         console.log("handleWebhook:");
         console.log(id);
-        // await airtableService.addToQueue(id);
-        // console.log(airtableService.getQueue());
         const payloads = await airtableService.listWebhookPayloads(id);
-        console.log("Payloads:")
-        console.log(payloads);
         res.status(200).send('Received');
     } catch (error) {
         console.error('Error handling Airtable webhook:', error);
