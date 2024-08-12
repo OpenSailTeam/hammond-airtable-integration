@@ -1,4 +1,4 @@
-const rateLimiter = require("../utils/rateLimiter");
+const rateLimiter = require("../middleware/rateLimiter");
 const airtableService = require("../services/airtableService");
 
 exports.syncToWebflow = async (payload) => {

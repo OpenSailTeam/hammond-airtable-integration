@@ -133,3 +133,6 @@ key.pem
 cert.pem
 privkey.pem
 fullchain.pem
+
+google-ads-credentials.json
+tokens.json

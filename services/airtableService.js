@@ -1,7 +1,7 @@
 const airtable = require('airtable');
 const queue = require('../utils/queue');
 const webflowService = require('./webflowService');
-const googleAdsService = require('./googleAdsService');
+const googleAdsService = require('./adsService');
 const logger = require('../utils/logger');
 const axios = require('axios');
 require('dotenv').config();

@@ -8,7 +8,12 @@ app.use(express.json());
 
 // Routes
 const airtableRoutes = require('./routes/airtableRoutes');
-app.use('/airtable', airtableRoutes);
+const adsRoutes = require('./routes/adsRoutes');
+const authRoutes = require('./routes/authRoutes');
+
+app.use('/api/airtable', airtableRoutes);
+app.use('/api/ads', adsRoutes);
+app.use('/api/auth', authRoutes);
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;
