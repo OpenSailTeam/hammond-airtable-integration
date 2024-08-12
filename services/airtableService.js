@@ -2,6 +2,7 @@ const airtable = require('airtable');
 const queue = require('../utils/queue');
 const webflowService = require('./webflowService');
 const googleAdsService = require('./adsService');
+const airtableService= require('./airtableService');
 const logger = require('../utils/logger');
 const axios = require('axios');
 require('dotenv').config();
@@ -25,7 +26,7 @@ exports.getRecordById = async (id) => {
 };
 
 exports.syncQueueToExternalServices = async () => {
-  const payloads = await listWebhookPayloads(item.id);
+  const payloads = await airtableService.listWebhookPayloads(item.id);
   console.log("Payloads:")
   console.log(payloads);
 };
