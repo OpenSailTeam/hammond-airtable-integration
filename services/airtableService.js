@@ -71,9 +71,9 @@ exports.listWebhookPayloads = async (id) => {
         }
       );
   
-      console.log('Webhook created:', response.data);
+      console.log('Payload:', response.data);
     } catch (error) {
-      console.error('Error creating webhook:', error.response ? error.response.data : error.message);
+      console.error('Error listing webhook payloads:', error.response ? error.response.data : error.message);
     }
   };
 
