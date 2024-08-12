@@ -25,7 +25,7 @@ exports.getRecordById = async (id) => {
 };
 
 exports.syncQueueToExternalServices = async () => {
-  const payloads = await airtableService.listWebhookPayloads(item.id);
+  const payloads = await listWebhookPayloads(item.id);
   console.log("Payloads:")
   console.log(payloads);
 };
