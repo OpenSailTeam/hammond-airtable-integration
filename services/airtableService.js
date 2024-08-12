@@ -26,9 +26,36 @@ exports.getRecordById = async (id) => {
 };
 
 exports.syncQueueToExternalServices = async () => {
-  const payloads = await airtableService.listWebhookPayloads(item.id);
-  console.log("Payloads:")
-  console.log(payloads);
+  console.log("Test3");
+    const queueItems = queue.getAll();
+    console.log(queueItems);
+    for (let item of queueItems) {
+      console.log("Test5");
+        try {
+            // Fetch the latest record data from Airtable
+            console.log(item.id);
+            const payloads = await airtableService.listWebhookPayloads(item.id);
+            console.log("Payloads:")
+            console.log(payloads);
+
+            // Transform and sync to Webflow
+            // await webflowService.syncToWebflow(payloads);
+
+            // Transform and sync to Google Ads
+            //await googleAdsService.syncToGoogleAds(payloads);
+
+            // Log successful sync
+            // logger.log('info', `Successfully sent payload ${item.webhook.id} to Webflow and Google Ads`);
+
+        } catch (error) {
+            // Log the error
+            // logger.log('error', `Error syncing record ${item.webhook.id}: ${error.message}`);
+
+            throw new Error(`Failed to sync record`);
+        }
+    }
+    // Clear the queue after processing
+    queue.clear();
 };
 
 exports.listWebhookPayloads = async (id) => {
