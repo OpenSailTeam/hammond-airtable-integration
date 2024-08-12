@@ -59,22 +59,23 @@ exports.syncQueueToExternalServices = async () => {
 };
 
 exports.listWebhookPayloads = async (id) => {
-    try {
+  try {
       const response = await axios.get(
-        `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json'
+          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads`,
+          {
+              headers: {
+                  Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
+                  'Content-Type': 'application/json'
+              }
           }
-        }
       );
-  
-      console.log('Payload:', response.data);
-    } catch (error) {
+      return response.data;  // Return the payload data
+  } catch (error) {
       console.error('Error listing webhook payloads:', error.response ? error.response.data : error.message);
-    }
-  };
+      throw error;  // Optionally re-throw the error to be handled by the caller
+  }
+};
+
 
   exports.updateAirtableWithWebflowItemId = async (recordId, webflowItemId) => {
     const baseId = 'your_base_id';  // Replace with your Airtable base ID
