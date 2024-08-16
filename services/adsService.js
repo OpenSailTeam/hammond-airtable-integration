@@ -1,3 +1,112 @@
+const { GoogleAdsApi } = require('google-ads-api');
+const authService = require('./authService');
+
+// Create a new instance of the Google Ads API client
+const client = new GoogleAdsApi({
+  client_id: process.env.GOOGLE_CLIENT_ID,
+  client_secret: process.env.GOOGLE_CLIENT_SECRET,
+  developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+});
+
+module.exports = {
+  /**
+   * Sync data with Google Ads
+   */
+  syncToGoogleAds: async (payload) => {
+    const customer = client.Customer({
+      customer_id: process.env.GOOGLE_CUSTOMER_ID,
+      login_customer_id: process.env.GOOGLE_LOGIN_CUSTOMER_ID,
+      refresh_token: authService.getRefreshToken(),
+    });
+
+    const assetService = customer.getService('AssetService'); // Using the correct service
+
+    // Handle Created Records
+    if (payload.createdRecordsById) {
+      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
+        const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
+
+        try {
+          const response = await assetService.mutateAssets({
+            customer_id: process.env.GOOGLE_CUSTOMER_ID,
+            operations: [
+              {
+                create: {
+                  asset: {
+                    type: 'DYNAMIC_REAL_ESTATE',
+                    dynamic_real_estate_asset: fieldData,
+                  },
+                },
+              },
+            ],
+          });
+
+          const googleAdsItemId = response.results[0].resource_name; // Assuming Google Ads API returns the resource name
+
+          await airtableService.updateAirtableWithGoogleAdsItemId(recordId, googleAdsItemId);
+          console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
+        } catch (error) {
+          console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
+
+    // Handle Changed Records
+    if (payload.changedRecordsById) {
+      for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
+        const fieldData = mapAirtableToGoogleAds(recordData.current.cellValuesByFieldId);
+        const googleAdsItemId = recordData.GoogleAdsItemId;
+
+        try {
+          await assetService.mutateAssets({
+            customer_id: process.env.GOOGLE_CUSTOMER_ID,
+            operations: [
+              {
+                update: {
+                  resource_name: googleAdsItemId,
+                  asset: {
+                    type: 'DYNAMIC_REAL_ESTATE',
+                    dynamic_real_estate_asset: fieldData,
+                  },
+                },
+              },
+            ],
+          });
+
+          console.log(`Successfully updated Google Ads asset ${googleAdsItemId}`);
+        } catch (error) {
+          console.error(`Error updating record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
+
+    // Handle Destroyed Records
+    if (payload.destroyedRecordIds) {
+      for (const recordId of payload.destroyedRecordIds) {
+        const googleAdsItemId = recordData.GoogleAdsItemId;
+
+        try {
+          await assetService.mutateAssets({
+            customer_id: process.env.GOOGLE_CUSTOMER_ID,
+            operations: [
+              {
+                remove: googleAdsItemId,
+              },
+            ],
+          });
+
+          console.log(`Successfully deleted Google Ads asset ${googleAdsItemId}`);
+        } catch (error) {
+          console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
+  },
+};
+
+
+/**
+
 // src/services/adsService.js
 const { GoogleAdsApi } = require('google-ads-api');
 const authService = require('./authService');
@@ -30,9 +139,6 @@ const mapAirtableToGoogleAds = (airtableFields) => {
 };
 
 module.exports = {
-  /**
-   * Sync data with Google Ads
-   */
   syncToGoogleAds: async (payload) => {
     const customer = client.Customer({
       customer_id: process.env.GOOGLE_CUSTOMER_ID,
@@ -41,13 +147,14 @@ module.exports = {
     });
 
     // Handle Created Records
-    console.log(payload);
     if (payload.createdRecordsById) {
-      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
+      for (const [recordId, recordData] of Object.entries(
+        payload.createdRecordsById
+      )) {
         const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
 
         try {
-          const response = await customer.mutate({
+          const response = await customer.mutateResources({
             operations: [
               {
                 create: {
@@ -59,6 +166,13 @@ module.exports = {
               },
             ],
           });
+
+          const googleAdsItemId = response.results[0].resource_name; // Assuming Google Ads API returns the resource name
+
+          await airtableService.updateAirtableWithGoogleAdsItemId(
+            recordId,
+            googleAdsItemId
+          );
           console.log(
             `Successfully created Google Ads asset and updated Airtable record ${recordId}`
           );
@@ -70,7 +184,7 @@ module.exports = {
         }
       }
     }
-    /**
+
     // Handle Changed Records
     if (payload.changedRecordsById) {
       for (const [recordId, recordData] of Object.entries(
@@ -129,6 +243,7 @@ module.exports = {
         }
       }
     }
-    */
   },
 };
+
+*/
