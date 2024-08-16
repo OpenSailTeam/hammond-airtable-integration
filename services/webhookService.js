@@ -1,6 +1,8 @@
 const axios = require('axios');
 require('dotenv').config();
 
+var webhookId = "";
+
 exports.createWebhook = async () => {
   try {
     const response = await axios.post(
@@ -27,17 +29,18 @@ exports.createWebhook = async () => {
         }
       }
     );
-
+    
     console.log('Webhook created:', response.data);
+    webhookId = response.data.id;
   } catch (error) {
     console.error('Error creating webhook:', error.response ? error.response.data : error.message);
   }
 };
 
-exports.deleteWebhook = async (id) => {
+exports.deleteWebhook = async () => {
   try {
     const response = await axios.delete(
-      `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}`,
+      `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${webhookId}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
