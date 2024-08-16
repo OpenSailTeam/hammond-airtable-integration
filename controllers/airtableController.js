@@ -21,13 +21,21 @@ exports.handlePublish = async (req, res) => {
         if (webhookPayloads) {
             console.log("webhookPayloads:");
             console.log(webhookPayloads);
-            for (payload of webhookPayloads.payloads)
+            for (const payload of webhookPayloads.payloads) {
                 console.log("payload:");
                 console.log(payload);
-                for (changes of payload.changedTablesById) {
+                
+                // Iterate over the keys (table IDs) of changedTablesById
+                for (const tableId of Object.keys(payload.changedTablesById)) {
+                    console.log("tableId:");
+                    console.log(tableId);
+                    
+                    const changes = payload.changedTablesById[tableId];
                     console.log("changes:");
                     console.log(changes);
+                    
                     await adsService.syncToGoogleAds(changes);
+                }
             }
         }
 
@@ -40,3 +48,4 @@ exports.handlePublish = async (req, res) => {
         res.status(500).send('Error during sync process');
     }
 };
+
