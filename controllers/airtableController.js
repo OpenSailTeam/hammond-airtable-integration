@@ -5,8 +5,6 @@ exports.handleWebhook = async (req, res) => {
         const { id } = req.body.webhook;
         console.log("handleWebhook:");
         console.log(id);
-        await airtableService.addToQueue(id);
-        console.log(airtableService.getQueue());
         res.status(200).send('Received');
     } catch (error) {
         console.error('Error handling Airtable webhook:', error);
@@ -18,7 +16,7 @@ exports.handlePublish = async (req, res) => {
     console.log("Test2");
     try {
         // Initiate the sync process
-        await airtableService.syncQueueToExternalServices();
+        await airtableService.listWebhookPayloads("");
 
         // If successful, send a 200 response
         res.status(200).send('Sync process completed successfully');
