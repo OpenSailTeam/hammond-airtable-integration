@@ -1,4 +1,5 @@
 const airtableService = require('../services/airtableService');
+const adsService = require('../services/adsService');
 
 exports.handleWebhook = async (req, res) => {
     try {
@@ -13,13 +14,16 @@ exports.handleWebhook = async (req, res) => {
 };
 
 exports.handlePublish = async (req, res) => {
-    console.log("Test2");
     try {
         // Initiate the sync process
-        await airtableService.listWebhookPayloads("achZEtDyYmTK0iaOP");
+        const payload = await airtableService.listWebhookPayloads();
 
+        if (payload) {
+            await adsService.syncToGoogleAds();
+        }
+        
         // If successful, send a 200 response
-        res.status(200).send('Sync process completed successfully');
+        res.status(200).send('Publish handled successfully');
     } catch (error) {
         console.error('Error in publish handler:', error);
 

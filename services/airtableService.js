@@ -9,62 +9,17 @@ require('dotenv').config();
 
 var cursor = 0;
 
-exports.addToQueue = async (id) => {
-    queue.push({ id });
-};
-
-exports.getQueue = () => {
-    return queue.getAll();
-};
-
-exports.clearQueue = () => {
-    queue.clear();
-};
-
 // Function to fetch data from Airtable
 exports.getRecordById = async (id) => {
     const base = new airtable({ apiKey: process.env.AIRTABLE_ACCESS_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
     return base(process.env.AIRTABLE_TABLE_ID).find(id);
 };
 
-exports.syncQueueToExternalServices = async () => {
-  console.log("Test3");
-    const queueItems = queue.getAll();
-    console.log(queueItems);
-    for (let item of queueItems) {
-      console.log("Test5");
-        try {
-            // Fetch the latest record data from Airtable
-            console.log(item.id);
-            const payloads = await airtableService.listWebhookPayloads(item.id);
-            console.log("Payloads:")
-            console.log(payloads);
-
-            // Transform and sync to Webflow
-            // await webflowService.syncToWebflow(payloads);
-
-            // Transform and sync to Google Ads
-            //await googleAdsService.syncToGoogleAds(payloads);
-
-            // Log successful sync
-            // logger.log('info', `Successfully sent payload ${item.webhook.id} to Webflow and Google Ads`);
-
-        } catch (error) {
-            // Log the error
-            // logger.log('error', `Error syncing record ${item.webhook.id}: ${error.message}`);
-
-            throw new Error(`Failed to sync record`);
-        }
-    }
-    // Clear the queue after processing
-    queue.clear();
-};
-
-exports.listWebhookPayloads = async (id) => {
+exports.listWebhookPayloads = async (webhookId) => {
   cursor += 1;
   try {
       const response = await axios.get(
-          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads?cursor=${cursor}`,
+          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${webhookId}/payloads?cursor=${cursor}`,
           {
               headers: {
                   Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
@@ -75,7 +30,7 @@ exports.listWebhookPayloads = async (id) => {
       return response.data;  // Return the payload data
   } catch (error) {
       console.error('Error listing webhook payloads:', error.response ? error.response.data : error.message);
-      throw error;  // Optionally re-throw the error to be handled by the caller
+      throw error;
   }
 };
 
@@ -102,5 +57,6 @@ exports.listWebhookPayloads = async (id) => {
       console.log('Airtable record updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating Airtable record:', error.response ? error.response.data : error.message);
+      throw error;
     }
   }
