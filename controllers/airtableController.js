@@ -16,7 +16,7 @@ exports.handlePublish = async (req, res) => {
     console.log("Test2");
     try {
         // Initiate the sync process
-        await airtableService.listWebhookPayloads("");
+        await airtableService.listWebhookPayloads("achZEtDyYmTK0iaOP");
 
         // If successful, send a 200 response
         res.status(200).send('Sync process completed successfully');
