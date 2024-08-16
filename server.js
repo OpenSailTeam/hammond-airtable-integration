@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const { createWebhook, deleteWebhook } = require('./services/webhookService');
+const { createWebhook, deleteWebhook } = require('./services/airtableService');
 
 // Middleware
 app.use(express.json());
