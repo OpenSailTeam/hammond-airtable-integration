@@ -18,20 +18,25 @@ app.use('/api/auth', authRoutes);
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;
-http.createServer(app).listen(PORT, async () => {
+const server = http.createServer(app);
+
+server.listen(PORT, async () => {
     console.log(`HTTP Server is running on port ${PORT}`);
-    (async () => {
-        await createWebhook();
-      })();
+    await createWebhook();
 });
 
 const gracefulShutdown = async () => {
     console.log('Shutting down server...');
-    await deleteWebhook();
-    server.close(() => {
-        console.log('Server closed.');
-        process.exit(0);
-    });
+    try {
+        await deleteWebhook();
+        server.close(() => {
+            console.log('Server closed.');
+            process.exit(0);
+        });
+    } catch (error) {
+        console.error('Error during graceful shutdown:', error);
+        process.exit(1);
+    }
 };
 
 process.on('SIGINT', gracefulShutdown);
