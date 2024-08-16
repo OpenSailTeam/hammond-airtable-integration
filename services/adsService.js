@@ -47,7 +47,7 @@ module.exports = {
         const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
 
         try {
-          const response = await customer.mutateAssets({
+          const response = await customer.mutate({
             operations: [
               {
                 create: {
@@ -67,7 +67,6 @@ module.exports = {
             `Error handling created record ${recordId}:`,
             error.response ? error.response.data : error.message
           );
-          throw error;
         }
       }
     }
