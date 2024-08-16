@@ -19,9 +19,9 @@ exports.handlePublish = async (req, res) => {
         const payload = await airtableService.listWebhookPayloads();
 
         if (payload) {
-            await adsService.syncToGoogleAds();
+            await adsService.syncToGoogleAds(payload);
         }
-        
+
         // If successful, send a 200 response
         res.status(200).send('Publish handled successfully');
     } catch (error) {
