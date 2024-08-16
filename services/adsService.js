@@ -41,6 +41,7 @@ module.exports = {
     });
 
     // Handle Created Records
+    console.log(payload);
     if (payload.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(
         payload.createdRecordsById
@@ -60,13 +61,6 @@ module.exports = {
               },
             ],
           });
-
-          const googleAdsItemId = response.results[0].resource_name; // Assuming Google Ads API returns the resource name
-
-          await airtableService.updateAirtableWithGoogleAdsItemId(
-            recordId,
-            googleAdsItemId
-          );
           console.log(
             `Successfully created Google Ads asset and updated Airtable record ${recordId}`
           );
