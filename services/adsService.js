@@ -10,240 +10,106 @@ const client = new GoogleAdsApi({
 
 module.exports = {
   /**
-   * Sync data with Google Ads
+   * Get all business data feeds for DYNAMIC_REAL_ESTATE assets
    */
-  syncToGoogleAds: async (payload) => {
-    const customer = client.Customer({
-      customer_id: process.env.GOOGLE_CUSTOMER_ID,
-      login_customer_id: process.env.GOOGLE_LOGIN_CUSTOMER_ID,
-      refresh_token: authService.getRefreshToken(),
-    });
+  getAllRealEstateFeeds: async () => {
+    try {
+      const customer = client.Customer({
+        customer_id: "6090812772",
+        login_customer_id: "1892061008",
+        refresh_token: authService.getRefreshToken(),
+      });
 
-    const assetService = customer.getService('AssetService'); // Using the correct service
+      const response = await customer.query(
+        `SELECT asset_set.resource_name, asset_set.id
+        FROM asset_set
+        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`
+      );
 
-    // Handle Created Records
-    if (payload.createdRecordsById) {
-      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
-        const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
-
-        try {
-          const response = await assetService.mutateAssets({
-            customer_id: process.env.GOOGLE_CUSTOMER_ID,
-            operations: [
-              {
-                create: {
-                  asset: {
-                    type: 'DYNAMIC_REAL_ESTATE',
-                    dynamic_real_estate_asset: fieldData,
-                  },
-                },
-              },
-            ],
-          });
-
-          const googleAdsItemId = response.results[0].resource_name; // Assuming Google Ads API returns the resource name
-
-          await airtableService.updateAirtableWithGoogleAdsItemId(recordId, googleAdsItemId);
-          console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
-        } catch (error) {
-          console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
+      return response;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
     }
+  },
 
-    // Handle Changed Records
-    if (payload.changedRecordsById) {
-      for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
-        const fieldData = mapAirtableToGoogleAds(recordData.current.cellValuesByFieldId);
-        const googleAdsItemId = recordData.GoogleAdsItemId;
+  /**
+   * Get all business data feeds for specified data feed
+   */
+  getAllListingsFromFeed: async () => {
+    try {
+      const customer = client.Customer({
+        customer_id: "6090812772",
+        login_customer_id: "1892061008",
+        refresh_token: authService.getRefreshToken(),
+      });
 
-        try {
-          await assetService.mutateAssets({
-            customer_id: process.env.GOOGLE_CUSTOMER_ID,
-            operations: [
-              {
-                update: {
-                  resource_name: googleAdsItemId,
-                  asset: {
-                    type: 'DYNAMIC_REAL_ESTATE',
-                    dynamic_real_estate_asset: fieldData,
-                  },
-                },
-              },
-            ],
-          });
+      const response = await customer.query(
+        `SELECT asset.resource_name, 
+        asset.id, 
+        asset.dynamic_real_estate_asset.address,
+        asset.dynamic_real_estate_asset.android_app_link,
+        asset.dynamic_real_estate_asset.city_name,
+        asset.dynamic_real_estate_asset.contextual_keywords,
+        asset.dynamic_real_estate_asset.description,
+        asset.dynamic_real_estate_asset.formatted_price,
+        asset.dynamic_real_estate_asset.image_url,
+        asset.dynamic_real_estate_asset.ios_app_link,
+        asset.dynamic_real_estate_asset.ios_app_store_id,
+        asset.dynamic_real_estate_asset.listing_id,
+        asset.dynamic_real_estate_asset.listing_name,
+        asset.dynamic_real_estate_asset.listing_type,
+        asset.dynamic_real_estate_asset.price,
+        asset.dynamic_real_estate_asset.property_type, 
+        asset.dynamic_real_estate_asset.similar_listing_ids
+        FROM asset_set_asset
+        WHERE asset_set.id = '8367326007'`
+      );
 
-          console.log(`Successfully updated Google Ads asset ${googleAdsItemId}`);
-        } catch (error) {
-          console.error(`Error updating record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
+      return response;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
     }
+  },
 
-    // Handle Destroyed Records
-    if (payload.destroyedRecordIds) {
-      for (const recordId of payload.destroyedRecordIds) {
-        const googleAdsItemId = recordData.GoogleAdsItemId;
+  /**
+   * Get data for specified listing
+   */
+  getListingDataById: async (listingId) => {
+    try {
+      const customer = client.Customer({
+        customer_id: "6090812772",
+        login_customer_id: "1892061008",
+        refresh_token: authService.getRefreshToken(),
+      });
 
-        try {
-          await assetService.mutateAssets({
-            customer_id: process.env.GOOGLE_CUSTOMER_ID,
-            operations: [
-              {
-                remove: googleAdsItemId,
-              },
-            ],
-          });
+      const response = await customer.query(
+        `SELECT asset.resource_name, 
+        asset.id, 
+        asset.dynamic_real_estate_asset.address,
+        asset.dynamic_real_estate_asset.android_app_link,
+        asset.dynamic_real_estate_asset.city_name,
+        asset.dynamic_real_estate_asset.contextual_keywords,
+        asset.dynamic_real_estate_asset.description,
+        asset.dynamic_real_estate_asset.formatted_price,
+        asset.dynamic_real_estate_asset.image_url,
+        asset.dynamic_real_estate_asset.ios_app_link,
+        asset.dynamic_real_estate_asset.ios_app_store_id,
+        asset.dynamic_real_estate_asset.listing_id,
+        asset.dynamic_real_estate_asset.listing_name,
+        asset.dynamic_real_estate_asset.listing_type,
+        asset.dynamic_real_estate_asset.price,
+        asset.dynamic_real_estate_asset.property_type, 
+        asset.dynamic_real_estate_asset.similar_listing_ids
+        FROM asset_set_asset
+        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`
+      );
 
-          console.log(`Successfully deleted Google Ads asset ${googleAdsItemId}`);
-        } catch (error) {
-          console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
+      return response;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
     }
   },
 };
-
-
-/**
-
-// src/services/adsService.js
-const { GoogleAdsApi } = require('google-ads-api');
-const authService = require('./authService');
-const rateLimiter = require('../middleware/rateLimiter');
-const airtableService = require('../services/airtableService');
-
-// Create a new instance of the Google Ads API client
-const client = new GoogleAdsApi({
-  client_id: process.env.GOOGLE_CLIENT_ID,
-  client_secret: process.env.GOOGLE_CLIENT_SECRET,
-  developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
-});
-
-// Define field mapping between Airtable and Google Ads API
-const fieldMapping = {
-  "Webflow Item ID": "dynamic_real_estate_asset.listing_id"
-};
-
-// Function to map Airtable fields to Google Ads fields
-const mapAirtableToGoogleAds = (airtableFields) => {
-  const googleAdsFields = {};
-
-  for (const [airtableField, googleAdsField] of Object.entries(fieldMapping)) {
-    if (airtableFields[airtableField]) {
-      googleAdsFields[googleAdsField] = airtableFields[airtableField];
-    }
-  }
-
-  return googleAdsFields;
-};
-
-module.exports = {
-  syncToGoogleAds: async (payload) => {
-    const customer = client.Customer({
-      customer_id: process.env.GOOGLE_CUSTOMER_ID,
-      login_customer_id: process.env.GOOGLE_LOGIN_CUSTOMER_ID,
-      refresh_token: authService.getRefreshToken(),
-    });
-
-    // Handle Created Records
-    if (payload.createdRecordsById) {
-      for (const [recordId, recordData] of Object.entries(
-        payload.createdRecordsById
-      )) {
-        const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
-
-        try {
-          const response = await customer.mutateResources({
-            operations: [
-              {
-                create: {
-                  asset: {
-                    type: 'DYNAMIC_REAL_ESTATE',
-                    dynamic_real_estate_asset: fieldData,
-                  },
-                },
-              },
-            ],
-          });
-
-          const googleAdsItemId = response.results[0].resource_name; // Assuming Google Ads API returns the resource name
-
-          await airtableService.updateAirtableWithGoogleAdsItemId(
-            recordId,
-            googleAdsItemId
-          );
-          console.log(
-            `Successfully created Google Ads asset and updated Airtable record ${recordId}`
-          );
-        } catch (error) {
-          console.error(
-            `Error handling created record ${recordId}:`,
-            error.response ? error.response.data : error.message
-          );
-        }
-      }
-    }
-
-    // Handle Changed Records
-    if (payload.changedRecordsById) {
-      for (const [recordId, recordData] of Object.entries(
-        payload.changedRecordsById
-      )) {
-        const fieldData = mapAirtableToGoogleAds(
-          recordData.current.cellValuesByFieldId
-        );
-        const googleAdsItemId = recordData.GoogleAdsItemId;
-
-        try {
-          await customer.mutateResources({
-            operations: [
-              {
-                update: {
-                  resource_name: googleAdsItemId,
-                  asset: {
-                    type: 'DYNAMIC_REAL_ESTATE',
-                    dynamic_real_estate_asset: fieldData,
-                  },
-                },
-              },
-            ],
-          });
-
-          console.log(`Successfully updated Google Ads asset ${googleAdsItemId}`);
-        } catch (error) {
-          console.error(
-            `Error updating record ${recordId}:`,
-            error.response ? error.response.data : error.message
-          );
-        }
-      }
-    }
-
-    // Handle Destroyed Records
-    if (payload.destroyedRecordIds) {
-      for (const recordId of payload.destroyedRecordIds) {
-        const googleAdsItemId = recordData.GoogleAdsItemId;
-
-        try {
-          await customer.mutateResources({
-            operations: [
-              {
-                remove: googleAdsItemId,
-              },
-            ],
-          });
-
-          console.log(`Successfully deleted Google Ads asset ${googleAdsItemId}`);
-        } catch (error) {
-          console.error(
-            `Error deleting record ${recordId}:`,
-            error.response ? error.response.data : error.message
-          );
-        }
-      }
-    }
-  },
-};
-
-*/
