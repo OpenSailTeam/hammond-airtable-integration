@@ -33,7 +33,7 @@ module.exports = {
   /**
    * Sync data with Google Ads
    */
-  syncToGoogleAds: async (payload) => {
+  syncToGoogleAds: async (payloads) => {
     const customer = client.Customer({
       customer_id: process.env.GOOGLE_CUSTOMER_ID,
       login_customer_id: process.env.GOOGLE_LOGIN_CUSTOMER_ID,
@@ -41,10 +41,14 @@ module.exports = {
     });
 
     // Handle Created Records
-    console.log(payload);
-    if (payload.createdRecordsById) {
+    console.log(payloads);
+    if (payloads.payloads) {
+      console.log("Payloads!");
+      console.log(payloads.payloads);
+    }
+    if (payloads.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(
-        payload.createdRecordsById
+        payloads.createdRecordsById
       )) {
         const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
 
@@ -74,9 +78,9 @@ module.exports = {
     }
     /**
     // Handle Changed Records
-    if (payload.changedRecordsById) {
+    if (payloads.changedRecordsById) {
       for (const [recordId, recordData] of Object.entries(
-        payload.changedRecordsById
+        payloads.changedRecordsById
       )) {
         const fieldData = mapAirtableToGoogleAds(
           recordData.current.cellValuesByFieldId
@@ -109,8 +113,8 @@ module.exports = {
     }
 
     // Handle Destroyed Records
-    if (payload.destroyedRecordIds) {
-      for (const recordId of payload.destroyedRecordIds) {
+    if (payloads.destroyedRecordIds) {
+      for (const recordId of payloads.destroyedRecordIds) {
         const googleAdsItemId = recordData.GoogleAdsItemId;
 
         try {
