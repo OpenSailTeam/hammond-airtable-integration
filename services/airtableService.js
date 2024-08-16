@@ -16,7 +16,7 @@ exports.getRecordById = async (id) => {
     return base(process.env.AIRTABLE_TABLE_ID).find(id);
 };
 
-exports.listWebhookPayloads = async (webhookId) => {
+exports.listWebhookPayloads = async () => {
   cursor += 1;
   try {
       const response = await axios.get(
