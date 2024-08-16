@@ -43,13 +43,11 @@ module.exports = {
     // Handle Created Records
     console.log(payload);
     if (payload.createdRecordsById) {
-      for (const [recordId, recordData] of Object.entries(
-        payload.createdRecordsById
-      )) {
+      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
         const fieldData = mapAirtableToGoogleAds(recordData.cellValuesByFieldId);
 
         try {
-          const response = await customer.mutateResources({
+          const response = await customer.mutateAssets({
             operations: [
               {
                 create: {
@@ -69,6 +67,7 @@ module.exports = {
             `Error handling created record ${recordId}:`,
             error.response ? error.response.data : error.message
           );
+          throw error;
         }
       }
     }
