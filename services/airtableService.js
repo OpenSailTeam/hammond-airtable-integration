@@ -30,7 +30,7 @@ exports.listWebhookPayloads = async (webhookId) => {
       );
       return response.data;  // Return the payload data
   } catch (error) {
-      console.error('Error listing webhook payloads:', error.response ? error.response.data : error.message);
+      console.error(`Error listing webhook payloads for ${webhookId}:`, error.response ? error.response.data : error.message);
       throw error;
   }
 };
