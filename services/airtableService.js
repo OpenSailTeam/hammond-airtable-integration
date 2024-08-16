@@ -7,6 +7,8 @@ const logger = require('../utils/logger');
 const axios = require('axios');
 require('dotenv').config();
 
+var cursor = 0;
+
 exports.addToQueue = async (id) => {
     queue.push({ id });
 };
@@ -59,9 +61,10 @@ exports.syncQueueToExternalServices = async () => {
 };
 
 exports.listWebhookPayloads = async (id) => {
+  cursor += 1;
   try {
       const response = await axios.get(
-          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads`,
+          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${id}/payloads?cursor=${cursor}`,
           {
               headers: {
                   Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,

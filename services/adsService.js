@@ -78,7 +78,7 @@ module.exports = {
         }
       }
     }
-
+    /**
     // Handle Changed Records
     if (payload.changedRecordsById) {
       for (const [recordId, recordData] of Object.entries(
@@ -137,5 +137,6 @@ module.exports = {
         }
       }
     }
+    */
   },
 };
