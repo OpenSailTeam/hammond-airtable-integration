@@ -16,10 +16,19 @@ exports.handleWebhook = async (req, res) => {
 exports.handlePublish = async (req, res) => {
     try {
         // Initiate the sync process
-        const payloads = await airtableService.listWebhookPayloads();
+        const webhookPayloads = await airtableService.listWebhookPayloads();
 
-        if (payloads) {
-            await adsService.syncToGoogleAds(payloads);
+        if (webhookPayloads) {
+            console.log("webhookPayloads:");
+            console.log(webhookPayloads);
+            for (payload of webhookPayloads.payloads)
+                console.log("payload:");
+                console.log(payload);
+                for (changes of payload.changedTablesById) {
+                    console.log("changes:");
+                    console.log(changes);
+                    await adsService.syncToGoogleAds(changes);
+            }
         }
 
         // If successful, send a 200 response
