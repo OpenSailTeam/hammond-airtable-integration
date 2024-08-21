@@ -14,21 +14,42 @@ module.exports = {
    */
   getAllRealEstateFeeds: async () => {
     try {
+      // Initialize customer with required credentials and log them for debugging
       const customer = client.Customer({
         customer_id: "6090812772",
         login_customer_id: "1892061008",
         refresh_token: authService.getRefreshToken(),
       });
-
-      const response = await customer.query(
-        `SELECT asset_set.resource_name, asset_set.id
+  
+      console.log('Customer initialized:', customer);
+  
+      // Log the query for debugging
+      const query = `
+        SELECT asset_set.resource_name, asset_set.id
         FROM asset_set
-        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`
-      );
-
+        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
+      console.log('Executing query:', query);
+  
+      // Execute the query
+      const response = await customer.query(query);
+  
+      // Log the response for debugging
+      console.log('Query response:', response);
+  
       return response;
     } catch (error) {
-      console.error('Error:', error);
+      // Log detailed error information
+      console.error('Error fetching real estate feeds:', error);
+  
+      // Check if error contains more specific details
+      if (error.code) {
+        console.error('Error Code:', error.code);
+      }
+      if (error.details) {
+        console.error('Error Details:', error.details);
+      }
+  
+      // Re-throw the error to be handled upstream
       throw error;
     }
   },
