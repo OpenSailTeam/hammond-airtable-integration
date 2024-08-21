@@ -22,7 +22,7 @@ module.exports = {
       );
 
       const query = `
-        SELECT asset_set.resource_name, asset_set.id
+        SELECT asset_set.resource_name, asset_set.id, asset_set.type, asset_set.status
         FROM asset_set
         WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
 
