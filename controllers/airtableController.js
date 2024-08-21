@@ -34,7 +34,7 @@ exports.handlePublish = async (req, res) => {
                     console.log("changes:");
                     console.log(changes);
                     
-                    await adsService.syncToGoogleAds(changes);
+                    await adsService.getAllRealEstateFeeds();
                 }
             }
         }
