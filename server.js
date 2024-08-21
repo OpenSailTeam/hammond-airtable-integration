@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const { createWebhook, deleteWebhook } = require('./services/airtableService');
+const readline = require('readline');
 
 // Middleware
 app.use(express.json());
@@ -25,6 +26,11 @@ server.listen(PORT, async () => {
     await createWebhook();
 });
 
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 const gracefulShutdown = async () => {
     console.log('Shutting down server...');
     try {
@@ -38,6 +44,12 @@ const gracefulShutdown = async () => {
         process.exit(1);
     }
 };
+
+rl.on('line', (input) => {
+    if (input === 'shutdown') {
+        gracefulShutdown();
+    }
+});
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);

@@ -10,6 +10,6 @@ router.get('/real-estate-listings', adsController.getAllListingsFromFeed);
 
 router.get('/real-estate-listing', adsController.getListingDataById);
 
-router.get('/update-real-estate-listing', adsController.updateListingDataById);
+router.get('/update-listing', adsController.updateListingDataById);
 
 module.exports = router;

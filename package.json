@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@htdangkhoa/google-ads": "^0.17.3",
     "airtable": "^0.12.2",
     "axios": "^1.7.3",
     "dotenv": "^16.4.5",

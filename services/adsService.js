@@ -1,12 +1,6 @@
-const { GoogleAdsApi } = require('google-ads-api');
-const authService = require('./authService');
-
-// Create a new instance of the Google Ads API client
-const client = new GoogleAdsApi({
-  client_id: process.env.GOOGLE_CLIENT_ID,
-  client_secret: process.env.GOOGLE_CLIENT_SECRET,
-  developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
-});
+// src/services/adsService.js
+const { GoogleAds } = require("@htdangkhoa/google-ads");
+const authService = require("./authService");
 
 module.exports = {
   /**
@@ -14,42 +8,28 @@ module.exports = {
    */
   getAllRealEstateFeeds: async () => {
     try {
-      // Initialize customer with required credentials and log them for debugging
-      const customer = client.Customer({
-        customer_id: "6090812772",
-        login_customer_id: "1892061008",
-        refresh_token: authService.getRefreshToken(),
-      });
-  
-      console.log('Customer initialized:', customer);
-  
-      // Log the query for debugging
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
+        }
+      );
+
       const query = `
         SELECT asset_set.resource_name, asset_set.id
         FROM asset_set
         WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
-      console.log('Executing query:', query);
-  
-      // Execute the query
-      const response = await customer.query(query);
-  
-      // Log the response for debugging
-      console.log('Query response:', response);
-  
+
+      const response = await service.search({ query });
       return response;
     } catch (error) {
-      // Log detailed error information
-      console.error('Error fetching real estate feeds:', error);
-  
-      // Check if error contains more specific details
-      if (error.code) {
-        console.error('Error Code:', error.code);
-      }
-      if (error.details) {
-        console.error('Error Details:', error.details);
-      }
-  
-      // Re-throw the error to be handled upstream
+      console.error("Error fetching real estate feeds:", error);
       throw error;
     }
   },
@@ -59,14 +39,21 @@ module.exports = {
    */
   getAllListingsFromFeed: async () => {
     try {
-      const customer = client.Customer({
-        customer_id: "6090812772",
-        login_customer_id: "1892061008",
-        refresh_token: authService.getRefreshToken(),
-      });
+      const authClient = await authService.getAuthClient();
 
-      const response = await customer.query(
-        `SELECT asset.resource_name, 
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
+        }
+      );
+
+      const query = `
+        SELECT asset.resource_name, 
         asset.id, 
         asset.dynamic_real_estate_asset.address,
         asset.dynamic_real_estate_asset.android_app_link,
@@ -84,12 +71,12 @@ module.exports = {
         asset.dynamic_real_estate_asset.property_type, 
         asset.dynamic_real_estate_asset.similar_listing_ids
         FROM asset_set_asset
-        WHERE asset_set.id = '8367326007'`
-      );
+        WHERE asset_set.id = '8367326007'`;
 
+      const response = await service.search({ query });
       return response;
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       throw error;
     }
   },
@@ -99,14 +86,21 @@ module.exports = {
    */
   getListingDataById: async (listingId) => {
     try {
-      const customer = client.Customer({
-        customer_id: "6090812772",
-        login_customer_id: "1892061008",
-        refresh_token: authService.getRefreshToken(),
-      });
+      const authClient = await authService.getAuthClient();
 
-      const response = await customer.query(
-        `SELECT asset.resource_name, 
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
+        }
+      );
+
+      const query = `
+        SELECT asset.resource_name, 
         asset.id, 
         asset.dynamic_real_estate_asset.address,
         asset.dynamic_real_estate_asset.android_app_link,
@@ -124,12 +118,71 @@ module.exports = {
         asset.dynamic_real_estate_asset.property_type, 
         asset.dynamic_real_estate_asset.similar_listing_ids
         FROM asset_set_asset
-        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`
-      );
+        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
+      const response = await service.search({ query });
       return response;
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
+      throw error;
+    }
+  },
+  /**
+   * Update the price of a specific listing by its ID
+   */
+  updateListingDataById: async (listingId) => {
+    try {
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: '6090812772',
+          login_customer_id: '1892061008',
+        }
+      );
+
+      // Fetch the asset resource name based on listingId
+      const query = `
+        SELECT asset.resource_name
+        FROM asset
+        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+
+      const { results } = await service.search({ query });
+      if (!results || results.length === 0) {
+        throw new Error(`Listing with ID ${listingId} not found.`);
+      }
+
+      const assetResourceName = results[0].asset.resource_name;
+
+
+      // Execute the mutation
+      const response = await service.mutate({
+        mutate_operations: [
+          {
+            feed_item_operation: {
+              update: {
+                resource_name: assetResourceName,
+                dynamic_real_estate_asset: {
+                  price: "123456 CAD",
+                },
+              },
+              update_mask: {
+                paths: ["dynamic_real_estate_asset.price"],
+              },
+            },
+          },
+        ],
+        partial_failure: true,
+      });
+
+      console.log('Update response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error updating listing data:', error);
       throw error;
     }
   },

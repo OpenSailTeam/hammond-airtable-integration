@@ -53,3 +53,16 @@ exports.getListingDataById = async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   };
+
+  /**
+ * Update listing by Id
+ */
+  exports.updateListingDataById = async (req, res) => {
+    try {
+      const feeds = await adsService.updateListingDataById("65a946859824a73cd3f87e43");
+      res.status(200).json(feeds);
+    } catch (error) {
+      console.error('Error updating listing:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
