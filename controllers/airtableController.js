@@ -15,6 +15,8 @@ exports.handleWebhook = async (req, res) => {
 
 exports.handlePublish = async (req, res) => {
     try {
+        console.log("test API");
+        await adsService.getAllRealEstateFeeds();
         // Initiate the sync process
         const webhookPayloads = await airtableService.listWebhookPayloads();
 
@@ -34,7 +36,7 @@ exports.handlePublish = async (req, res) => {
                     console.log("changes:");
                     console.log(changes);
                     
-                    await adsService.getAllRealEstateFeeds();
+                    await adsService.syncToGoogleAds(changes);
                 }
             }
         }
