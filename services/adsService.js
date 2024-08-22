@@ -10,8 +10,6 @@ module.exports = {
    */
   syncToGoogleAds: async (payload) => {
 
-    const tableFields = await airtableService.getTableFields();
-
     // Handle Created Records
     if (payload.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
