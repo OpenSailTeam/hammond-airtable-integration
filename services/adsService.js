@@ -21,8 +21,8 @@ module.exports = {
 
         try {
           console.log("todo");
-          //await createListingWithId();
-          //console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
+          await createListingWithId();
+          console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
         } catch (error) {
           console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
         }
