@@ -4,6 +4,36 @@ const authService = require("./authService");
 
 module.exports = {
   /**
+   * Test
+   */
+  realEstateTest: async () => {
+    try {
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
+        }
+      );
+
+      const query = `
+        SELECT asset_set.resource_name, asset_set.id, asset_set.type, asset_set.status
+        FROM asset_set
+        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
+
+      const response = await service.search({ query });
+      return response;
+    } catch (error) {
+      console.error("Error testing:", error);
+      throw error;
+    }
+  },
+  /**
    * Get all business data feeds for DYNAMIC_REAL_ESTATE assets
    */
   getAllRealEstateFeeds: async () => {
@@ -158,25 +188,22 @@ module.exports = {
 
       const assetResourceName = results[0].asset.resource_name;
 
-
       // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
           {
-            feed_item_operation: {
+            asset_operation: {
               update: {
                 resource_name: assetResourceName,
                 dynamic_real_estate_asset: {
-                  price: "123456 CAD",
+                  price: "123 CAD",
                 },
               },
-              update_mask: {
-                paths: ["dynamic_real_estate_asset.price"],
-              },
-            },
-          },
+              update_mask: ["dynamic_real_estate_asset.price"]
+            }
+          }
         ],
-        partial_failure: true,
+        partial_failure: false,
       });
 
       console.log('Update response:', response);

@@ -5,6 +5,19 @@ const adsService = require('../services/adsService');
 /**
  * Get all business data feeds
  */
+exports.realEstateTest = async (req, res) => {
+  try {
+    const feeds = await adsService.realEstateTest();
+    res.status(200).json(feeds);
+  } catch (error) {
+    console.error('Error fetching business data feeds:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+/**
+ * Get all business data feeds
+ */
 exports.getAllRealEstateFeeds = async (req, res) => {
   try {
     const feeds = await adsService.getAllRealEstateFeeds();
