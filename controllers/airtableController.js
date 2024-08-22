@@ -4,7 +4,7 @@ const queue = require('../utils/queue');
 
 exports.handleWebhook = async (req, res) => {
     try {
-        const { id } = req.body.webhook.id;
+        const { id } = req.body.webhook;
         console.log("handleWebhook:");
         console.log(id);
         airtableService.addToQueue(id);
@@ -18,7 +18,6 @@ exports.handleWebhook = async (req, res) => {
 exports.handlePublish = async (req, res) => {
     try {
         console.log("test API");
-        await adsService.getAllRealEstateFeeds();
         await airtableService.syncQueue();
 
         // If successful, send a 200 response

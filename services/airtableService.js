@@ -11,14 +11,10 @@ var cursor = 0;
 var webhookId = "";
 
 exports.addToQueue = async (id) => {
-  console.log("add to queue");
-  console.log(id);
-  queue.push({ id });
+  queue.push(id);
 };
 
 exports.getQueue = () => {
-  console.log("get queue");
-  console.log(queue.getAll());
   return queue.getAll();
 };
 
@@ -37,7 +33,7 @@ exports.syncQueue = async () => {
   const queueItems = queue.getAll();
   console.log(queueItems);
   for (let item of queueItems) {
-    console.log(item);
+    console.log(item.id);
 
       const webhookPayloads = await airtableService.listWebhookPayloads(item);
 
