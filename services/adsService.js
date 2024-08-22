@@ -251,6 +251,7 @@ module.exports = {
       return response;
     } catch (error) {
       console.error('Error updating listing data:', error);
+      console.error('Error details:', error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin'));
       throw error;
     }
   }
