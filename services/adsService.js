@@ -263,4 +263,45 @@ module.exports = {
       throw error;
     }
   },
+
+  /**
+   * Update the price of a specific listing by its ID
+   */
+  createListingWithId: async (listingId, fieldData) => {
+    try {
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: '6090812772',
+          login_customer_id: '1892061008',
+        }
+      );
+      
+      // Execute the mutation
+      const response = await service.mutate({
+        mutate_operations: [
+          {
+            asset_operation: {
+              create: {
+                dynamic_real_estate_asset: fieldData
+              },
+              update_mask: updateMask
+            }
+          }
+        ],
+        partial_failure: false,
+      });
+
+      console.log('Update response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error updating listing data:', error);
+      throw error;
+    }
+  }
 };
