@@ -18,25 +18,29 @@ exports.handlePublish = async (req, res) => {
         console.log("test API");
         await adsService.getAllRealEstateFeeds();
         // Initiate the sync process
-        const webhookPayloads = await airtableService.listWebhookPayloads();
+        const queueItems = queue.getAll();
+        for (let item of queueItems) {
 
-        if (webhookPayloads) {
-            console.log("webhookPayloads:");
-            console.log(webhookPayloads);
-            for (const payload of webhookPayloads.payloads) {
-                console.log("payload:");
-                console.log(payload);
-                
-                // Iterate over the keys (table IDs) of changedTablesById
-                for (const tableId of Object.keys(payload.changedTablesById)) {
-                    console.log("tableId:");
-                    console.log(tableId);
+            const webhookPayloads = await airtableService.listWebhookPayloads(item);
+
+            if (webhookPayloads) {
+                console.log("webhookPayloads:");
+                console.log(webhookPayloads);
+                for (const payload of webhookPayloads.payloads) {
+                    console.log("payload:");
+                    console.log(payload);
                     
-                    const changes = payload.changedTablesById[tableId];
-                    console.log("changes:");
-                    console.log(changes);
-                    
-                    //await adsService.syncToGoogleAds(changes);
+                    // Iterate over the keys (table IDs) of changedTablesById
+                    for (const tableId of Object.keys(payload.changedTablesById)) {
+                        console.log("tableId:");
+                        console.log(tableId);
+                        
+                        const changes = payload.changedTablesById[tableId];
+                        console.log("changes:");
+                        console.log(changes);
+                        
+                        //await adsService.syncToGoogleAds(changes);
+                    }
                 }
             }
         }

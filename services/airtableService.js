@@ -10,17 +10,29 @@ require('dotenv').config();
 var cursor = 0;
 var webhookId = "";
 
+exports.addToQueue = async (id) => {
+  queue.push({ id });
+};
+
+exports.getQueue = () => {
+  return queue.getAll();
+};
+
+exports.clearQueue = () => {
+  queue.clear();
+};
+
 // Function to fetch data from Airtable
 exports.getRecordById = async (id) => {
     const base = new airtable({ apiKey: process.env.AIRTABLE_ACCESS_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
     return base(process.env.AIRTABLE_TABLE_ID).find(id);
 };
 
-exports.listWebhookPayloads = async () => {
+exports.listWebhookPayloads = async (item) => {
   cursor += 1;
   try {
       const response = await axios.get(
-          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${webhookId}/payloads?cursor=${cursor}`,
+          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${item}/payloads?cursor=${cursor}`,
           {
               headers: {
                   Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
@@ -30,7 +42,7 @@ exports.listWebhookPayloads = async () => {
       );
       return response.data;  // Return the payload data
   } catch (error) {
-      console.error(`Error listing webhook payloads for ${webhookId}:`, error.response ? error.response.data : error.message);
+      console.error(`Error listing webhook payloads for ${item}:`, error.response ? error.response.data : error.message);
       throw error;
   }
 };
