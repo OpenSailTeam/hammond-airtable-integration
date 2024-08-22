@@ -1,7 +1,7 @@
 // src/services/adsService.js
 const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
-const listingTransformer = require("./transformers/listingTransformer");
+const listingTransformer = require("../transformers/listingTransformer");
 
 module.exports = {
   /**
