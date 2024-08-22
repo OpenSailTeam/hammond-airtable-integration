@@ -1,6 +1,7 @@
 // src/services/adsService.js
 const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
+const airtableService = require("./airtableService");
 const listingTransformer = require("../transformers/listingTransformer");
 
 module.exports = {
@@ -9,10 +10,12 @@ module.exports = {
    */
   syncToGoogleAds: async (payload) => {
 
+    const tableFields = await airtableService.getTableFields();
+
     // Handle Created Records
     if (payload.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId);
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId, tableFields);
 
         try {
           console.log("todo");
@@ -27,7 +30,7 @@ module.exports = {
     // Handle Changed Records
     if (payload.changedRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId);
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId, tableFields);
 
         try {
           await updateListingDataById(recordId, fieldData);

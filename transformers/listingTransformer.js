@@ -1,8 +1,10 @@
 module.exports = {
 
-  transformToAdsFormat: (internalObject) => {
-    console.log("transformer");
+  transformToAdsFormat: (internalObject, fields) => {
+    console.log("internalObjct");
     console.log(internalObject);
+    console.log("fields");
+    console.log(fields);
     return {
 
     };
