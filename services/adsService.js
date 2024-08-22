@@ -232,6 +232,10 @@ module.exports = {
           login_customer_id: '1892061008',
         }
       );
+
+      const updateMask = Object.keys(fieldData).map(
+        (field) => `dynamic_real_estate_asset.${field}`
+      );
       
       // Execute the mutation
       const response = await service.mutate({
@@ -240,7 +244,8 @@ module.exports = {
             asset_operation: {
               create: {
                 dynamic_real_estate_asset: fieldData
-              }
+              },
+              update_mask: updateMask
             }
           }
         ],
