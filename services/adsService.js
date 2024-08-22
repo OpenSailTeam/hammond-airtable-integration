@@ -3,6 +3,11 @@ const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
 
 module.exports = {
+
+  syncToGoogleAds: async (changes) => {
+    console.log(changes)
+  },
+
   /**
    * Test
    */
