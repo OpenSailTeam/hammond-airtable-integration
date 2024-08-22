@@ -232,20 +232,6 @@ module.exports = {
           login_customer_id: '1892061008',
         }
       );
-
-      console.log("request:");
-      console.log({
-        mutate_operations: [
-          {
-            asset_operation: {
-              create: {
-                dynamic_real_estate_asset: fieldData
-              }
-            }
-          }
-        ],
-        partial_failure: false,
-      });
       
       // Execute the mutation
       const response = await service.mutate({
@@ -254,8 +240,7 @@ module.exports = {
             asset_operation: {
               create: {
                 dynamic_real_estate_asset: fieldData
-              },
-              update_mask: updateMask
+              }
             }
           }
         ],
