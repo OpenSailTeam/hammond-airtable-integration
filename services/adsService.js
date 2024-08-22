@@ -226,6 +226,10 @@ module.exports = {
         {
           auth: authClient,
           developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+          logging: {
+            summary: true,
+            detail: true,
+          },
         },
         {
           customer_id: '6090812772',
