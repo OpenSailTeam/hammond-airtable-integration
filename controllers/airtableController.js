@@ -27,8 +27,8 @@ exports.handlePublish = async (req, res) => {
                 for (const tableId of Object.keys(payload.changedTablesById)) {
 
                     const changes = payload.changedTablesById[tableId];
-                    
-                    await adsService.syncToGoogleAds(changes);
+
+                    await syncService.syncToGoogleAds(changes);
                 }
             }
         }

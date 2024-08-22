@@ -1,63 +1,8 @@
 // src/services/adsService.js
 const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
-const airtableService = require("./airtableService");
-const adsService = require("./adsService");
-const listingTransformer = require("../transformers/listingTransformer");
 
 module.exports = {
-  /**
-   * Sync data with Google Ads
-   */
-  syncToGoogleAds: async (payload) => {
-
-    // Handle Created Records
-    if (payload.createdRecordsById) {
-      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId);
-        console.log("recordData");
-        console.log(recordData);
-        console.log("fieldData");
-        console.log(fieldData);
-
-        try {
-          console.log("todo");
-          await adsService.createListing(fieldData);
-          console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
-        } catch (error) {
-          console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
-    }
-
-    // Handle Changed Records
-    if (payload.changedRecordsById) {
-      for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId);
-
-        try {
-          await updateListingDataById(recordId, fieldData);
-          console.log(`Successfully updated Google Ads asset ${recordId}`);
-        } catch (error) {
-          console.error(`Error updating record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
-    }
-
-    // Handle Destroyed Records
-    if (payload.destroyedRecordIds) {
-      for (const recordId of payload.destroyedRecordIds) {
-
-        try {
-          console.log("todo");
-          //console.log(`Successfully deleted Google Ads asset ${recordId}`);
-        } catch (error) {
-          console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
-        }
-      }
-    }
-  },
-
   /**
    * Test
    */
