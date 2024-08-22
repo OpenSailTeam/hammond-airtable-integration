@@ -233,13 +233,6 @@ module.exports = {
         }
       );
 
-      const updateMask = Object.keys(fieldData).map(
-        (field) => `dynamic_real_estate_asset.${field}`
-      );
-
-      console.log("updateMask:");
-      console.log(updateMask);
-
       console.log("request:");
       console.log({
         mutate_operations: [
@@ -247,8 +240,7 @@ module.exports = {
             asset_operation: {
               create: {
                 dynamic_real_estate_asset: fieldData
-              },
-              update_mask: updateMask
+              }
             }
           }
         ],
