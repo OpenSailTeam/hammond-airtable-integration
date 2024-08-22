@@ -1,18 +1,30 @@
 module.exports = {
 
-  transformToAdsFormat: (internalObject, fields) => {
-    console.log("internalObjct");
-    console.log(internalObject);
-    console.log("fields");
-    console.log(fields);
+  transformToAdsFormat: (internalObject) => {
     return {
-
+        "listing_id": internalObject["fldsSdgGBKmG3Stvi"],
+        "listing_name": internalObject["fldw8YroAQYa4eja5"],
+        "final_url": slugToUrl(internalObject["fldkkNCldg9MufIKi"]),
+        "city_name": internalObject["fldc7RlwdErEiIli1"],
+        "description": internalObject["fldWz4IkS9h1Nfdr4"],
+        "property_type": "farmland",
+        "listing_type": "sale",
+        "contextual_keywords": [],
+        "address": internalObject["fldpjQcD4ABxDFmIZ"],
+        "price": internalObject["fld3OAds8z2vDEnqz"],
+        //"formatted_price": internalObject,
+        //"tracking_template": internalObject,
+        //"final_mobile_URL": internalObject,
+        "image_URL": internalObject["fldsaCnr0pnZMh2k7"][0]["url"],
+        //"android_app_link": internalObject,
+        //"ios_app_link": internalObject,
+        //"ios_app_store_id": internalObject,
+        //"similar_listing_ids": internalObject
     };
   }
   
 }
 
-function complexTransformation(value) {
-    // Perform complex logic here...
-    return transformedValue;
+function slugToUrl(slug) {
+    return "https://hammondrealty.ca/listings/" + slug;
   }

@@ -15,7 +15,11 @@ module.exports = {
     // Handle Created Records
     if (payload.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId, tableFields);
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId);
+        console.log("recordData");
+        console.log(recordData);
+        console.log("fieldData");
+        console.log(fieldData);
 
         try {
           console.log("todo");
@@ -30,7 +34,7 @@ module.exports = {
     // Handle Changed Records
     if (payload.changedRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId, tableFields);
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId);
 
         try {
           await updateListingDataById(recordId, fieldData);
