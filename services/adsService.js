@@ -2,6 +2,7 @@
 const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
 const airtableService = require("./airtableService");
+const adsService = require("./adsService");
 const listingTransformer = require("../transformers/listingTransformer");
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
 
         try {
           console.log("todo");
-          await createListing(fieldData);
+          await adsService.createListing(fieldData);
           console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
         } catch (error) {
           console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
