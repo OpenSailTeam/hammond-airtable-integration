@@ -1,5 +1,6 @@
+module.exports = {
 
-  exports.transformToAdsFormat = (internalObject) => {
+  transformToAdsFormat: (internalObject) => {
     console.log("transformer");
     console.log(internalObject);
     return {
@@ -7,8 +8,9 @@
     };
   }
   
-  function complexTransformation(value) {
+}
+
+function complexTransformation(value) {
     // Perform complex logic here...
     return transformedValue;
   }
-  
