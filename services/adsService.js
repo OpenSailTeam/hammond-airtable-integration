@@ -237,7 +237,6 @@ module.exports = {
         }
       );
       
-      // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
           {
@@ -245,18 +244,10 @@ module.exports = {
               create: {
                 dynamic_real_estate_asset: {
                   listing_id: "12345",
-                  listing_name: "Test",
+                  listing_name: "Test Listing",
                   final_url: "https://hammondrealty.ca/properties-new",
-                  image_urls: ["https://hammondrealty.ca/image.png"], // Ensuring it's populated
-                  city_name: "Example City", // Ensuring all necessary fields are filled
-                  description: "3 beds, 2 baths, 1568 sq. ft.",
-                  price: "500000.00 USD",
-                  property_type: "House",
-                  listing_type: "For Sale",
-                  contextual_keywords: "sale;real estate;house",
-                  address: "123 Boulevard St, Example City, EC 94043",
-                  tracking_template: "{lpurl}?usertype={_user}&ad={_adformatid}&src=google",
-                  custom_parameter: "{_ptype}=condo;{_type}=sale"
+                  // Include only one image URL to test
+                  image_urls: ["https://hammondrealty.ca/image.png"]
                 }
               }
             }
@@ -264,8 +255,8 @@ module.exports = {
         ],
         partial_failure: false,
       });
-
-      console.log('Update response:', response);
+      
+      console.log('Response:', response);
       return response;
     } catch (error) {
       console.error('Error updating listing data:', error);
