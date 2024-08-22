@@ -1,5 +1,6 @@
 const airtableService = require('../services/airtableService');
 const adsService = require('../services/adsService');
+const queue = require('../utils/queue');
 
 exports.handleWebhook = async (req, res) => {
     try {
