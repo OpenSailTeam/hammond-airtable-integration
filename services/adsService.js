@@ -1,11 +1,55 @@
 // src/services/adsService.js
 const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
+const listingTransformer = require("./listingTransformer");
 
 module.exports = {
+  /**
+   * Sync data with Google Ads
+   */
+  syncToGoogleAds: async (payload) => {
 
-  syncToGoogleAds: async (changes) => {
-    console.log(changes)
+    // Handle Created Records
+    if (payload.createdRecordsById) {
+      for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId);
+
+        try {
+          console.log("todo");
+          //await createListingWithId();
+          //console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
+        } catch (error) {
+          console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
+
+    // Handle Changed Records
+    if (payload.changedRecordsById) {
+      for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
+        const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId);
+
+        try {
+          await updateListingDataById(recordId, fieldData);
+          console.log(`Successfully updated Google Ads asset ${recordId}`);
+        } catch (error) {
+          console.error(`Error updating record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
+
+    // Handle Destroyed Records
+    if (payload.destroyedRecordIds) {
+      for (const recordId of payload.destroyedRecordIds) {
+
+        try {
+          console.log("todo");
+          //console.log(`Successfully deleted Google Ads asset ${recordId}`);
+        } catch (error) {
+          console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
+        }
+      }
+    }
   },
 
   /**
@@ -165,7 +209,7 @@ module.exports = {
   /**
    * Update the price of a specific listing by its ID
    */
-  updateListingDataById: async (listingId) => {
+  updateListingDataById: async (listingId, fieldData) => {
     try {
       const authClient = await authService.getAuthClient();
 
@@ -192,7 +236,10 @@ module.exports = {
       }
 
       const assetResourceName = results[0].asset.resource_name;
-
+      const updateMask = Object.keys(fieldData).map(
+        (field) => `dynamic_real_estate_asset.${field}`
+      );
+      
       // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
@@ -200,11 +247,9 @@ module.exports = {
             asset_operation: {
               update: {
                 resource_name: assetResourceName,
-                dynamic_real_estate_asset: {
-                  price: "123 CAD",
-                },
+                dynamic_real_estate_asset: fieldData,
               },
-              update_mask: ["dynamic_real_estate_asset.price"]
+              update_mask: updateMask
             }
           }
         ],

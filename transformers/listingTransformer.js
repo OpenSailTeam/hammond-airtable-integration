@@ -1,9 +1,9 @@
 
-  function transformToAdsFormat(internalObject) {
+  exports.transformToAdsFormat = (internalObject) => {
+    console.log("transformer");
+    console.log(internalObject);
     return {
-      adsAttributeA: internalObject.internalAttribute1,
-      ads1AttributeB: complexTransformation(internalObject.internalAttribute2),
-      // Additional transformations...
+
     };
   }
   

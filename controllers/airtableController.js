@@ -21,22 +21,14 @@ exports.handlePublish = async (req, res) => {
         const webhookPayloads = await airtableService.listWebhookPayloads();
 
         if (webhookPayloads) {
-            console.log("webhookPayloads:");
-            console.log(webhookPayloads);
+
             for (const payload of webhookPayloads.payloads) {
-                console.log("payload:");
-                console.log(payload);
-                
-                // Iterate over the keys (table IDs) of changedTablesById
+
                 for (const tableId of Object.keys(payload.changedTablesById)) {
-                    console.log("tableId:");
-                    console.log(tableId);
-                    
+
                     const changes = payload.changedTablesById[tableId];
-                    console.log("changes:");
-                    console.log(changes);
                     
-                    //await adsService.syncToGoogleAds(changes);
+                    await adsService.syncToGoogleAds(changes);
                 }
             }
         }
