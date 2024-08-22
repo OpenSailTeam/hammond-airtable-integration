@@ -243,8 +243,7 @@ module.exports = {
               }
             }
           }
-        ],
-        partial_failure: false,
+        ]
       });
 
       console.log('Update response:', response);
