@@ -5,7 +5,7 @@ module.exports = {
         "listing_id": internalObject["fldsSdgGBKmG3Stvi"],
         "listing_name": internalObject["fldw8YroAQYa4eja5"],
         "final_url": slugToUrl(internalObject["fldkkNCldg9MufIKi"]),
-        "city_name": internalObject["fldc7RlwdErEiIli1"]["valuesByLinkedRecordId"][internalObject["fldc7RlwdErEiIli1"]["valuesByLinkedRecordId"]["linkedRecordIds"][0]],
+        "city_name": internalObject["fldc7RlwdErEiIli1"]["valuesByLinkedRecordId"][internalObject["fldc7RlwdErEiIli1"]["linkedRecordIds"][0]],
         "description": internalObject["fldWz4IkS9h1Nfdr4"],
         "property_type": "farmland",
         "listing_type": "sale",
