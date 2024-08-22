@@ -31,7 +31,9 @@ exports.getRecordById = async (id) => {
 exports.syncQueue = async () => {
   // Initiate the sync process
   const queueItems = queue.getAll();
+  console.log(queueItems);
   for (let item of queueItems) {
+    console.log(item);
 
       const webhookPayloads = await airtableService.listWebhookPayloads(item);
 
