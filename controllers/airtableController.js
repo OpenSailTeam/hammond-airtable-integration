@@ -1,13 +1,11 @@
 const airtableService = require('../services/airtableService');
 const adsService = require('../services/adsService');
-const queue = require('../utils/queue');
 
 exports.handleWebhook = async (req, res) => {
     try {
         const { id } = req.body.webhook;
         console.log("handleWebhook:");
         console.log(id);
-        airtableService.addToQueue(id);
         res.status(200).send('Received');
     } catch (error) {
         console.error('Error handling Airtable webhook:', error);
@@ -18,9 +16,9 @@ exports.handleWebhook = async (req, res) => {
 exports.handlePublish = async (req, res) => {
     try {
         console.log("test API");
-        //await airtableService.syncQueue();
-
-        const webhookPayloads = await airtableService.listWebhookPayloads(webhookId);
+        await adsService.getAllRealEstateFeeds();
+        // Initiate the sync process
+        const webhookPayloads = await airtableService.listWebhookPayloads();
 
         if (webhookPayloads) {
             console.log("webhookPayloads:");
@@ -38,7 +36,7 @@ exports.handlePublish = async (req, res) => {
                     console.log("changes:");
                     console.log(changes);
                     
-                    //await adsService.syncToGoogleAds(changes);
+                    await adsService.syncToGoogleAds(changes);
                 }
             }
         }

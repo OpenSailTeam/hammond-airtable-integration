@@ -10,61 +10,17 @@ require('dotenv').config();
 var cursor = 0;
 var webhookId = "";
 
-exports.addToQueue = async (id) => {
-  queue.push(id);
-};
-
-exports.getQueue = () => {
-  return queue.getAll();
-};
-
-exports.clearQueue = () => {
-  queue.clear();
-};
-
 // Function to fetch data from Airtable
 exports.getRecordById = async (id) => {
     const base = new airtable({ apiKey: process.env.AIRTABLE_ACCESS_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
     return base(process.env.AIRTABLE_TABLE_ID).find(id);
 };
 
-exports.syncQueue = async () => {
-  // Initiate the sync process
-  const queueItems = queue.getAll();
-  console.log(queueItems);
-  for (let item of queueItems) {
-    console.log(item);
-
-      const webhookPayloads = await airtableService.listWebhookPayloads(item);
-
-      if (webhookPayloads) {
-          console.log("webhookPayloads:");
-          console.log(webhookPayloads);
-          for (const payload of webhookPayloads.payloads) {
-              console.log("payload:");
-              console.log(payload);
-              
-              // Iterate over the keys (table IDs) of changedTablesById
-              for (const tableId of Object.keys(payload.changedTablesById)) {
-                  console.log("tableId:");
-                  console.log(tableId);
-                  
-                  const changes = payload.changedTablesById[tableId];
-                  console.log("changes:");
-                  console.log(changes);
-                  
-                  //await adsService.syncToGoogleAds(changes);
-              }
-          }
-      }
-  }
-}
-
-exports.listWebhookPayloads = async (item) => {
+exports.listWebhookPayloads = async () => {
   cursor += 1;
   try {
       const response = await axios.get(
-          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${item}/payloads?cursor=${cursor}`,
+          `https://api.airtable.com/v0/bases/${process.env.AIRTABLE_BASE_ID}/webhooks/${webhookId}/payloads?cursor=${cursor}`,
           {
               headers: {
                   Authorization: `Bearer ${process.env.AIRTABLE_ACCESS_TOKEN}`,
@@ -74,7 +30,7 @@ exports.listWebhookPayloads = async (item) => {
       );
       return response.data;  // Return the payload data
   } catch (error) {
-      console.error(`Error listing webhook payloads for ${item}:`, error.response ? error.response.data : error.message);
+      console.error(`Error listing webhook payloads for ${webhookId}:`, error.response ? error.response.data : error.message);
       throw error;
   }
 };
