@@ -4,7 +4,7 @@ const queue = require('../utils/queue');
 
 exports.handleWebhook = async (req, res) => {
     try {
-        const { id } = req.body.webhook;
+        const { id } = req.body.webhook.id;
         console.log("handleWebhook:");
         console.log(id);
         airtableService.addToQueue(id);
