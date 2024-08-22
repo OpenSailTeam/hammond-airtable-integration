@@ -14,6 +14,7 @@ module.exports = {
         console.log("Processing record:", recordId);
 
         try {
+        console.log("Field data:", fieldData);
           await adsService.createListing(fieldData);
           console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
         } catch (error) {
