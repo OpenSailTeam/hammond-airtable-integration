@@ -9,7 +9,7 @@ module.exports = {
         "description": internalObject["fldWz4IkS9h1Nfdr4"],
         "property_type": "farmland",
         "listing_type": "sale",
-        "contextual_keywords": [],
+        //"contextual_keywords": [],
         "address": internalObject["fldpjQcD4ABxDFmIZ"],
         "price": internalObject["fld3OAds8z2vDEnqz"].toString(),
         //"formatted_price": internalObject,
