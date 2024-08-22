@@ -33,7 +33,7 @@ exports.syncQueue = async () => {
   const queueItems = queue.getAll();
   console.log(queueItems);
   for (let item of queueItems) {
-    console.log(item.id);
+    console.log(item);
 
       const webhookPayloads = await airtableService.listWebhookPayloads(item);
 
