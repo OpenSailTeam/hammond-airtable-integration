@@ -215,53 +215,54 @@ module.exports = {
     }
   },
 
-  /**
-   * Update the price of a specific listing by its ID
-   */
-  createListing: async (fieldData) => {
-    try {
-      const authClient = await authService.getAuthClient();
+/**
+ * Update the price of a specific listing by its ID
+ */
+createListing: async (fieldData) => {
+  try {
+    const authClient = await authService.getAuthClient();
 
-      const service = new GoogleAds(
+    const service = new GoogleAds({
+      auth: authClient,
+      developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+      logging: {
+        summary: true,
+        detail: true,
+      },
+    }, {
+      customer_id: '6090812772',
+      login_customer_id: '1892061008',
+    });
+
+    // Execute the mutation
+    const response = await service.mutate({
+      mutate_operations: [
         {
-          auth: authClient,
-          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
-          logging: {
-            summary: true,
-            detail: true,
-          },
-        },
-        {
-          customer_id: '6090812772',
-          login_customer_id: '1892061008',
-        }
-      );
-      
-      const response = await service.mutate({
-        mutate_operations: [
-          {
-            asset_operation: {
-              create: {
-                dynamic_real_estate_asset: {
-                  listing_id: "12345",
-                  listing_name: "Test Listing",
-                  final_url: "https://hammondrealty.ca/properties-new",
-                  // Include only one image URL to test
-                  image_urls: ["https://hammondrealty.ca/image.png"]
-                }
+          asset_operation: {
+            create: {
+              dynamic_real_estate_asset: {
+                listing_id: "12345",
+                listing_name: "Test",
+                final_url: "https://hammondrealty.ca/properties-new"
               }
             }
           }
-        ],
-        partial_failure: false,
-      });
-      
-      console.log('Response:', response);
-      return response;
-    } catch (error) {
-      console.error('Error updating listing data:', error);
-      console.error('Error details:', error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin'));
-      throw error;
+        }
+      ],
+      partial_failure: false,
+    });
+
+    console.log('Update response:', response);
+    return response;
+  } catch (error) {
+    console.error('Error updating listing data:', error);
+    if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
+      const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
+      const decodedError = Buffer.from(buffer).toString('utf-8');
+      console.error('Decoded error details:', decodedError);
     }
+    throw error;
   }
+}
+
 };
