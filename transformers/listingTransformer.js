@@ -2,8 +2,8 @@ module.exports = {
 
   transformToAdsFormat: (internalObject) => {
     return {
-        "listing_id": "65a946859824a73cd3f87e44",
-        "listing_name": "Yorkton 1/3 Share o",
+        "listing_id": "12345",
+        "listing_name": "Test",
         //"final_url": slugToUrl(internalObject["fldkkNCldg9MufIKi"]),
         //"city_name": "Yorkton",
         //"description": internalObject["fldWz4IkS9h1Nfdr4"],
