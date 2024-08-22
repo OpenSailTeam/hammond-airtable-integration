@@ -19,7 +19,7 @@ exports.getRecordById = async (id) => {
 // Function to fetch data from Airtable
 exports.getTableFields = async () => {
   const base = new airtable({ apiKey: process.env.AIRTABLE_ACCESS_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
-  return base(process.env.AIRTABLE_TABLE_ID).find(fields);
+  return base(process.env.AIRTABLE_TABLE_ID);
 };
 
 exports.listWebhookPayloads = async () => {
