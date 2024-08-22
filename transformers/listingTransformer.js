@@ -15,7 +15,7 @@ module.exports = {
         //"formatted_price": internalObject,
         //"tracking_template": internalObject,
         //"final_mobile_URL": internalObject,
-        "image_URL": internalObject["fldsaCnr0pnZMh2k7"][0]["url"],
+        "image_url": internalObject["fldsaCnr0pnZMh2k7"][0]["url"],
         //"android_app_link": internalObject,
         //"ios_app_link": internalObject,
         //"ios_app_store_id": internalObject,
