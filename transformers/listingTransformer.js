@@ -2,8 +2,8 @@ module.exports = {
 
   transformToAdsFormat: (internalObject) => {
     return {
-        "listing_id": "12345",
-        "listing_name": "Test",
+        listing_id: "12345",
+        listing_name: "Test",
         //"final_url": slugToUrl(internalObject["fldkkNCldg9MufIKi"]),
         //"city_name": "Yorkton",
         //"description": internalObject["fldWz4IkS9h1Nfdr4"],
@@ -18,7 +18,7 @@ module.exports = {
         //"image_url": "https://cdn.prod.website-files.com/61a9429c69570225f140d3b0/65a946e3e3cb4fa6a6ab3f05_NkgCaYS9eUESlSV7B8ZFTAi9C8K7XgoInOKt_VA0uf4.jpeg",
         //"listing_id": internalObject["fldsSdgGBKmG3Stvi"],
         //"listing_name": internalObject["fldw8YroAQYa4eja5"],
-        "final_url": "https://hammondrealty.ca/properties-new"
+        final_url: "https://hammondrealty.ca/properties-new"
         //"city_name": internalObject["fldc7RlwdErEiIli1"]["valuesByLinkedRecordId"][internalObject["fldc7RlwdErEiIli1"]["linkedRecordIds"][0]][0],
         //"description": internalObject["fldWz4IkS9h1Nfdr4"],
         //"property_type": "farmland",
