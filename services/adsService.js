@@ -240,9 +240,8 @@ module.exports = {
             asset_operation: {
               create: {
                 dynamic_real_estate_asset: {
-                  listing_id: '12345',
-                  listing_name: 'Test',
-                  final_url: 'https://hammondrealty.ca/properties-new'
+                  listing_id: "12345",
+                  listing_name: "Test"
                 }
               }
             }
