@@ -21,7 +21,7 @@ module.exports = {
 
         try {
           console.log("todo");
-          await createListingWithId();
+          await createListing();
           console.log(`Successfully created Google Ads asset and updated Airtable record ${recordId}`);
         } catch (error) {
           console.error(`Error handling created record ${recordId}:`, error.response ? error.response.data : error.message);
@@ -272,7 +272,7 @@ module.exports = {
   /**
    * Update the price of a specific listing by its ID
    */
-  createListingWithId: async (listingId, fieldData) => {
+  createListing: async () => {
     try {
       const authClient = await authService.getAuthClient();
 
