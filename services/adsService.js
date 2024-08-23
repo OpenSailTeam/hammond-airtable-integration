@@ -243,9 +243,12 @@ module.exports = {
       });
   
       console.log('Asset creation response:', assetResponse);
+
+      console.log("asset response");
+      console.log(assetResponse["mutate_operation_responses"]["asset_result"]["resource_name"]);
       
       // Extract the resource name of the newly created asset
-      const createdAssetResourceName = assetResponse.results[0].resource_name;
+      const createdAssetResourceName = assetResponse["mutate_operation_responses"]["asset_result"]["resource_name"];
   
       // Step 2: Associate the asset with the asset set
       const assetSetResponse = await service.mutate({
