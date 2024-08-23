@@ -232,6 +232,9 @@ module.exports = {
           login_customer_id: '1892061008',
         }
       );
+
+      console.log("What is going on");
+      console.log(fieldData);
       
       // Execute the mutation
       const response = await service.mutate({
