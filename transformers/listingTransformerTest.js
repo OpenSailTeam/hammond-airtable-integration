@@ -13,10 +13,14 @@ module.exports = {
         //  internalObject["Name (from Closest Town)"]?.["valuesByLinkedRecordId"]?.[
         //    internalObject["fldc7RlwdErEiIli1"]["linkedRecordIds"]?.[0]
         //  ]?.[0],
-        description: trimString(internalObject["General Description"], 100),
+        description: internalObject["General Description"]
+          ? trimString(internalObject["General Description"], 100)
+          : undefined,
         property_type: "farmland",
         listing_type: "sale",
-        address: internalObject["Coordinates"],
+        address: internalObject["Coordinates"]
+          ? internalObject["Coordinates"]
+          : undefined,
         price: internalObject["Price (P)"]
           ? formatPrice(internalObject["Price (P)"])
           : undefined,
