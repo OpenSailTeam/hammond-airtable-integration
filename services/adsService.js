@@ -230,18 +230,30 @@ module.exports = {
         }
       );
       
-      // Execute the mutation
-      const response = await service.mutate({
+      // Step 1: Create the asset
+      const assetResponse = await service.mutate({
         mutate_operations: [
           {
             asset_operation: {
               create: fieldData
             }
-          },
+          }
+        ],
+        partial_failure: false,
+      });
+  
+      console.log('Asset creation response:', assetResponse);
+      
+      // Extract the resource name of the newly created asset
+      const createdAssetResourceName = assetResponse.results[0].resource_name;
+  
+      // Step 2: Associate the asset with the asset set
+      const assetSetResponse = await service.mutate({
+        mutate_operations: [
           {
             asset_set_asset_operation: {
               create: {
-                asset: 'INSERT_ASSET_RESOURCE_NAME_HERE', // This will be replaced with the resource name of the created asset
+                asset: createdAssetResourceName,
                 asset_set: 'customers/6090812772/assetSets/8367326007',
               }
             }
@@ -250,10 +262,10 @@ module.exports = {
         partial_failure: false,
       });
   
-      console.log('Create response:', response);
-      return response;
+      console.log('Asset set association response:', assetSetResponse);
+      return { assetResponse, assetSetResponse };
     } catch (error) {
-      console.error('Error creating listing data:', error);
+      console.error('Error during asset creation or association:', error);
       if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
         const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
         const decodedError = Buffer.from(buffer).toString('utf-8');
@@ -262,5 +274,6 @@ module.exports = {
       throw error;
     }
   }
+  
   
 };
