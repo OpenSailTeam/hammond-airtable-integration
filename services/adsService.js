@@ -190,6 +190,9 @@ module.exports = {
       const updateMask = Object.keys(fieldData).map(
         (field) => `dynamic_real_estate_asset.${field}`
       );
+
+      console.log("fieldData:");
+      console.log(fieldData);
       
       // Execute the mutation
       const response = await service.mutate({
@@ -210,7 +213,12 @@ module.exports = {
       console.log('Update response:', response);
       return response;
     } catch (error) {
-      console.error('Error updating listing data:', error);
+      console.error('Error during asset creation or association:', error);
+      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
+        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
+        const decodedError = Buffer.from(buffer).toString('utf-8');
+        console.error('Decoded error details:', decodedError);
+      }
       throw error;
     }
   },
@@ -322,7 +330,12 @@ module.exports = {
       console.log('Delete response:', response);
       return response;
     } catch (error) {
-      console.error('Error deleting listing:', error);
+      console.error('Error during asset creation or association:', error);
+      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
+        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
+        const decodedError = Buffer.from(buffer).toString('utf-8');
+        console.error('Decoded error details:', decodedError);
+      }
       throw error;
     }
   },
