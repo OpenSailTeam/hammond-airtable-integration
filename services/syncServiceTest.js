@@ -26,7 +26,7 @@ module.exports = {
             await adsService.removeListingById(record.id);
           } else {
             // If record is found in feed and is not a draft or archived, update it
-            await adsService.updateListingDataById(record.id, record.fields);
+            await adsService.updateListingDataById(record.id, fieldData);
           }
         } else {
           // If record is not found in feed and is a draft or archived, skip it
@@ -37,7 +37,7 @@ module.exports = {
             console.log(`Skipping record: ${record.id}`);
           } else {
             // If record is not found in feed and is not a draft or archived, create it
-            await adsService.createListing(record.fields);
+            await adsService.createListing(fieldData);
           }
         }
         console.log(
