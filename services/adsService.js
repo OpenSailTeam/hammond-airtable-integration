@@ -193,16 +193,18 @@ module.exports = {
 
       console.log("fieldData:");
       console.log(fieldData);
+
+      console.log("updateMask:");
+      console.log(fieldData);
+
+      fieldData.resource_name = assetResourceName;
       
       // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
           {
             asset_operation: {
-              update: {
-                resource_name: assetResourceName,
-                fieldData
-              },
+              update: fieldData,
               update_mask: updateMask
             }
           }
