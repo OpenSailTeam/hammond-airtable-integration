@@ -28,8 +28,8 @@ exports.getAllRecords = async () => {
           records.push(...pageRecords);
           fetchNextPage(); // Fetch the next page of records
       });
-      console.log("returned object")
-      console.log(records);
+      //console.log("returned object")
+      //console.log(records);
       return records;
   } catch (error) {
       logger.error('Error fetching records from Airtable:', error);
