@@ -1,16 +1,16 @@
 // src/services/adsSyncService.js
 const adsService = require("./adsService");
-const listingTransformer = require("../transformers/listingTransformer");
+const listingTransformer = require("../transformers/listingTransformerTest");
 
 module.exports = {
   /**
    * Sync data with Google Ads
    */
-  syncToGoogleAds: async (payload) => {
+  syncToGoogleAds: async (records) => {
     // Handle Created Records
-    for (const [recordId, recordData] of Object.entries(payload)) {
-      const fieldData = listingTransformer.transformToAdsFormat(recordId, recordData.cellValuesByFieldId);
-      console.log("Processing record:", recordId);
+    for (const record of records) {
+      const fieldData = listingTransformer.transformToAdsFormat(record.id, record.fields);
+      console.log("Processing record:", record.id);
 
       try {
       console.log("Field data:", fieldData);
