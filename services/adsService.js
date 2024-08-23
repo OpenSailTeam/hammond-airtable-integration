@@ -307,51 +307,46 @@ module.exports = {
   removeListingById: async (listingId) => {
     try {
       const authClient = await authService.getAuthClient();
-
+  
       const service = new GoogleAds(
         {
           auth: authClient,
           developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
         },
         {
-          customer_id: "6090812772",
-          login_customer_id: "1892061008",
+          customer_id: '6090812772',
+          login_customer_id: '1892061008',
         }
       );
-
+  
       // Step 1: Fetch the asset resource name based on listingId
       const assetQuery = `
         SELECT asset.resource_name
         FROM asset
         WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
-
+  
       const assetQueryResult = await service.search({ query: assetQuery });
-      if (!assetQueryResult || assetQueryResult.length === 0) {
+      if (!assetQueryResult || !assetQueryResult.results || assetQueryResult.results.length === 0) {
         throw new Error(`Listing with ID ${listingId} not found.`);
       }
-
-      const assetResourceName = assetQueryResult[0].asset.resource_name;
+  
+      const assetResourceName = assetQueryResult.results[0].asset.resource_name;
       console.log("Asset resource name:", assetResourceName);
-
+  
       // Step 2: Fetch the asset_set_asset resource name using the asset resource name
       const assetSetAssetQuery = `
         SELECT asset_set_asset.resource_name
         FROM asset_set_asset
         WHERE asset_set_asset.asset = '${assetResourceName}'`;
-
-      const assetSetAssetQueryResult = await service.search({
-        query: assetSetAssetQuery,
-      });
-      if (!assetSetAssetQueryResult || assetSetAssetQueryResult.length === 0) {
-        throw new Error(
-          `AssetSetAsset not found for asset: ${assetResourceName}`
-        );
+  
+      const assetSetAssetQueryResult = await service.search({ query: assetSetAssetQuery });
+      if (!assetSetAssetQueryResult || !assetSetAssetQueryResult.results || assetSetAssetQueryResult.results.length === 0) {
+        throw new Error(`AssetSetAsset not found for asset: ${assetResourceName}`);
       }
-
-      const assetSetAssetResourceName =
-        assetSetAssetQueryResult[0].asset_set_asset.resource_name;
+  
+      const assetSetAssetResourceName = assetSetAssetQueryResult.results[0].asset_set_asset.resource_name;
       console.log("Asset set asset resource name:", assetSetAssetResourceName);
-
+  
       // Step 3: Remove the asset_set_asset association
       const response = await service.mutate({
         mutate_operations: [
@@ -363,27 +358,18 @@ module.exports = {
         ],
         partial_failure: false,
       });
-
-      console.log("Remove response:", response);
+  
+      console.log('Remove response:', response);
       return response;
     } catch (error) {
-      console.error(
-        "Error during asset removal or association removal:",
-        error
-      );
-      if (
-        error.metadata &&
-        error.metadata.get(
-          "google.ads.googleads.v17.errors.googleadsfailure-bin"
-        )
-      ) {
-        const buffer = error.metadata.get(
-          "google.ads.googleads.v17.errors.googleadsfailure-bin"
-        )[0];
-        const decodedError = Buffer.from(buffer).toString("utf-8");
-        console.error("Decoded error details:", decodedError);
+      console.error('Error during asset removal or association removal:', error);
+      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
+        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
+        const decodedError = Buffer.from(buffer).toString('utf-8');
+        console.error('Decoded error details:', decodedError);
       }
       throw error;
     }
   },
+  
 };
