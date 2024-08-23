@@ -183,7 +183,7 @@ module.exports = {
 
       const { results } = await service.search({ query });
       if (!results || results.length === 0) {
-        throw new Error(`Listing with ID ${listingId} not found.`);
+        return undefined;
       } else {
         console.log(`Found existing listing with id: ${listingId}`);
       }
