@@ -193,7 +193,7 @@ module.exports = {
       console.log(fieldData);
 
       console.log("updateMask:");
-      console.log(fieldData);
+      console.log(updateMask);
 
       fieldData.resource_name = assetResourceName;
       
