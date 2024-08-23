@@ -240,11 +240,10 @@ createListing: async (fieldData) => {
         {
           asset_operation: {
             create: {
+              final_urls: ["https://www.hammondrealty.ca/properties-new"],
               dynamic_real_estate_asset: {
                 listing_id: "12345",
                 listing_name: "Test",
-                final_url: "https://www.hammondrealty.ca/properties-new",
-                final_urls: ["https://www.hammondrealty.ca/properties-new"]
               }
             }
           }
