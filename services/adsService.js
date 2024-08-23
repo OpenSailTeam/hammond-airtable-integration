@@ -198,7 +198,7 @@ module.exports = {
             asset_operation: {
               update: {
                 resource_name: assetResourceName,
-                dynamic_real_estate_asset: fieldData,
+                fieldData
               },
               update_mask: updateMask
             }
@@ -273,7 +273,59 @@ module.exports = {
       }
       throw error;
     }
-  }
-  
-  
+  },
+  /**
+   * Update the price of a specific listing by its ID
+   */
+  deleteListingById: async (listingId) => {
+    try {
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: '6090812772',
+          login_customer_id: '1892061008',
+        }
+      );
+
+      // Fetch the asset resource name based on listingId
+      const query = `
+        SELECT asset.resource_name
+        FROM asset
+        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+
+      const { results } = await service.search({ query });
+      if (!results || results.length === 0) {
+        throw new Error(`Listing with ID ${listingId} not found.`);
+      }
+
+      const assetResourceName = results[0].asset.resource_name;
+      
+      // Execute the mutation
+      const response = await service.mutate({
+        mutate_operations: [
+          {
+            asset_operation: {
+              delete: {
+                resource_name: assetResourceName
+              }
+            }
+          }
+        ],
+        partial_failure: false,
+      });
+
+      console.log('Delete response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error deleting listing:', error);
+      throw error;
+    }
+  },
+
+
 };
