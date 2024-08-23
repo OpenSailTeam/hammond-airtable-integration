@@ -170,8 +170,8 @@ module.exports = {
           developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
         },
         {
-          customer_id: '6090812772',
-          login_customer_id: '1892061008',
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
         }
       );
 
@@ -188,9 +188,8 @@ module.exports = {
 
       const assetResourceName = results[0].asset.resource_name;
       const updateMask = Object.keys(fieldData["dynamic_real_estate_asset"])
-      .filter((field) => field !== "listing_id")
-      .map((field) => `dynamic_real_estate_asset.${field}`);
-    
+        .filter((field) => field !== "listing_id")
+        .map((field) => `dynamic_real_estate_asset.${field}`);
 
       console.log("fieldData:");
       console.log(fieldData);
@@ -199,28 +198,35 @@ module.exports = {
       console.log(updateMask);
 
       fieldData.resource_name = assetResourceName;
-      
+
       // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
           {
             asset_operation: {
               update: fieldData,
-              update_mask: updateMask
-            }
-          }
+              update_mask: updateMask,
+            },
+          },
         ],
         partial_failure: false,
       });
 
-      console.log('Update response:', response);
+      console.log("Update response:", response);
       return response;
     } catch (error) {
-      console.error('Error during asset creation or association:', error);
-      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
-        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
-        const decodedError = Buffer.from(buffer).toString('utf-8');
-        console.error('Decoded error details:', decodedError);
+      console.error("Error during asset creation or association:", error);
+      if (
+        error.metadata &&
+        error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )
+      ) {
+        const buffer = error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )[0];
+        const decodedError = Buffer.from(buffer).toString("utf-8");
+        console.error("Decoded error details:", decodedError);
       }
       throw error;
     }
@@ -229,35 +235,38 @@ module.exports = {
   createListing: async (fieldData) => {
     try {
       const authClient = await authService.getAuthClient();
-  
+
       const service = new GoogleAds(
         {
           auth: authClient,
           developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
         },
         {
-          customer_id: '6090812772',
-          login_customer_id: '1892061008',
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
         }
       );
-      
+
       // Step 1: Create the asset
       const assetResponse = await service.mutate({
         mutate_operations: [
           {
             asset_operation: {
-              create: fieldData
-            }
-          }
+              create: fieldData,
+            },
+          },
         ],
         partial_failure: false,
       });
-  
-      console.log('Asset creation response:', assetResponse);
-      
+
+      console.log("Asset creation response:", assetResponse);
+
       // Extract the resource name of the newly created asset
-      const createdAssetResourceName = assetResponse["mutate_operation_responses"][0]["asset_result"]["resource_name"];
-  
+      const createdAssetResourceName =
+        assetResponse["mutate_operation_responses"][0]["asset_result"][
+          "resource_name"
+        ];
+
       // Step 2: Associate the asset with the asset set
       const assetSetResponse = await service.mutate({
         mutate_operations: [
@@ -265,22 +274,29 @@ module.exports = {
             asset_set_asset_operation: {
               create: {
                 asset: createdAssetResourceName,
-                asset_set: 'customers/6090812772/assetSets/8367326007',
-              }
-            }
-          }
+                asset_set: "customers/6090812772/assetSets/8367326007",
+              },
+            },
+          },
         ],
         partial_failure: false,
       });
-  
-      console.log('Asset set association response:', assetSetResponse);
+
+      console.log("Asset set association response:", assetSetResponse);
       return { assetResponse, assetSetResponse };
     } catch (error) {
-      console.error('Error during asset creation or association:', error);
-      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
-        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
-        const decodedError = Buffer.from(buffer).toString('utf-8');
-        console.error('Decoded error details:', decodedError);
+      console.error("Error during asset creation or association:", error);
+      if (
+        error.metadata &&
+        error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )
+      ) {
+        const buffer = error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )[0];
+        const decodedError = Buffer.from(buffer).toString("utf-8");
+        console.error("Decoded error details:", decodedError);
       }
       throw error;
     }
@@ -298,15 +314,16 @@ module.exports = {
           developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
         },
         {
-          customer_id: '6090812772',
-          login_customer_id: '1892061008',
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
         }
       );
 
       // Fetch the asset resource name based on listingId
       const query = `
-        SELECT asset.resource_name
+        SELECT asset.resource_name, asset_set_asset.resource_name
         FROM asset
+        JOIN asset_set_asset ON asset.resource_name = asset_set_asset.asset
         WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
       const { results } = await service.search({ query });
@@ -315,34 +332,43 @@ module.exports = {
       }
 
       const assetResourceName = results[0].asset.resource_name;
-      console.log("asset resource name");
+      const assetSetAssetResourceName =
+        results[0].asset_set_asset.resource_name;
+      console.log("Asset resource name:", assetResourceName);
+      console.log("Asset set asset resource name:", assetSetAssetResourceName);
 
-      console.log(assetResourceName);
-      
-      // Execute the mutation
+      // Remove the asset_set_asset association
       const response = await service.mutate({
         mutate_operations: [
           {
-            asset_operation: {
-              remove: assetResourceName,
-            }
-          }
+            asset_set_asset_operation: {
+              remove: assetSetAssetResourceName,
+            },
+          },
         ],
         partial_failure: false,
       });
 
-      console.log('Delete response:', response);
+      console.log("Remove response:", response);
       return response;
     } catch (error) {
-      console.error('Error during asset creation or association:', error);
-      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
-        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
-        const decodedError = Buffer.from(buffer).toString('utf-8');
-        console.error('Decoded error details:', decodedError);
+      console.error(
+        "Error during asset removal or association removal:",
+        error
+      );
+      if (
+        error.metadata &&
+        error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )
+      ) {
+        const buffer = error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )[0];
+        const decodedError = Buffer.from(buffer).toString("utf-8");
+        console.error("Decoded error details:", decodedError);
       }
       throw error;
     }
   },
-
-
 };
