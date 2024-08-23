@@ -360,6 +360,20 @@ module.exports = {
       });
   
       console.log('Remove response:', response);
+  
+      // Step 4: Verify the removal by re-querying the asset_set_asset
+      const verificationQuery = `
+        SELECT asset_set_asset.resource_name
+        FROM asset_set_asset
+        WHERE asset_set_asset.asset = '${assetResourceName}'`;
+  
+      const verificationResult = await service.search({ query: verificationQuery });
+      if (verificationResult.results.length === 0) {
+        console.log('AssetSetAsset successfully removed.');
+      } else {
+        console.log('AssetSetAsset still exists:', verificationResult.results);
+      }
+  
       return response;
     } catch (error) {
       console.error('Error during asset removal or association removal:', error);
@@ -371,5 +385,6 @@ module.exports = {
       throw error;
     }
   },
+  
   
 };
