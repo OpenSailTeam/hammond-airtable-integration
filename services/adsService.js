@@ -215,13 +215,10 @@ module.exports = {
     }
   },
 
-  /**
-   * Update the price of a specific listing by its ID
-   */
   createListing: async (fieldData) => {
     try {
       const authClient = await authService.getAuthClient();
-
+  
       const service = new GoogleAds(
         {
           auth: authClient,
@@ -232,9 +229,6 @@ module.exports = {
           login_customer_id: '1892061008',
         }
       );
-
-      console.log("What is going on");
-      console.log(fieldData);
       
       // Execute the mutation
       const response = await service.mutate({
@@ -243,15 +237,23 @@ module.exports = {
             asset_operation: {
               create: fieldData
             }
+          },
+          {
+            asset_set_asset_operation: {
+              create: {
+                asset: 'INSERT_ASSET_RESOURCE_NAME_HERE', // This will be replaced with the resource name of the created asset
+                asset_set: 'customers/6090812772/assetSets/8367326007',
+              }
+            }
           }
         ],
         partial_failure: false,
       });
-
-      console.log('Update response:', response);
+  
+      console.log('Create response:', response);
       return response;
     } catch (error) {
-      console.error('Error updating listing data:', error);
+      console.error('Error creating listing data:', error);
       if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
         const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
         const decodedError = Buffer.from(buffer).toString('utf-8');
@@ -260,4 +262,5 @@ module.exports = {
       throw error;
     }
   }
+  
 };
