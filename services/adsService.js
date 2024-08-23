@@ -315,13 +315,25 @@ module.exports = {
       }
 
       const assetResourceName = results[0].asset.resource_name;
+
+      console.log("object");
+      console.log({
+        mutate_operations: [
+          {
+            asset_operation: {
+              remove: assetResourceName,
+            }
+          }
+        ],
+        partial_failure: false,
+      });
       
       // Execute the mutation
       const response = await service.mutate({
         mutate_operations: [
           {
             asset_operation: {
-              remove: assetResourceName
+              remove: assetResourceName,
             }
           }
         ],
