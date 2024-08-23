@@ -182,11 +182,8 @@ module.exports = {
         WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
       const { results } = await service.search({ query });
-      if (!results || results.length === 0) {
-        return undefined;
-      } else {
-        console.log(`Found existing listing with id: ${listingId}`);
-      }
+      console.log("Results:")
+      console.log(results);
 
       return results;
     } catch (error) {
