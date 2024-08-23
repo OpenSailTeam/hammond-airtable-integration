@@ -243,7 +243,7 @@ createListing: async (fieldData) => {
               dynamic_real_estate_asset: {
                 listing_id: "12345",
                 listing_name: "Test",
-                final_urls: ["https://hammondrealty.ca/properties-new"]
+                final_urls: ["https://www.hammondrealty.ca/properties-new"]
               }
             }
           }
