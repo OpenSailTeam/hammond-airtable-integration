@@ -315,18 +315,9 @@ module.exports = {
       }
 
       const assetResourceName = results[0].asset.resource_name;
+      console.log("asset resource name");
 
-      console.log("object");
-      console.log({
-        mutate_operations: [
-          {
-            asset_operation: {
-              remove: assetResourceName,
-            }
-          }
-        ],
-        partial_failure: false,
-      });
+      console.log(assetResourceName);
       
       // Execute the mutation
       const response = await service.mutate({
