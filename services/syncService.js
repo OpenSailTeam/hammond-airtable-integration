@@ -10,7 +10,7 @@ module.exports = {
     // Handle Created Records
     if (payload.createdRecordsById) {
       for (const [recordId, recordData] of Object.entries(payload.createdRecordsById)) {
-        const fieldData = listingTransformer.transformToAdsFormat(recordData.cellValuesByFieldId);
+        const fieldData = listingTransformer.transformToAdsFormat(recordId, recordData.cellValuesByFieldId);
         console.log("Processing record:", recordId);
 
         try {
@@ -26,7 +26,7 @@ module.exports = {
     // Handle Changed Records
     if (payload.changedRecordsById) {
         for (const [recordId, recordData] of Object.entries(payload.changedRecordsById)) {
-          const fieldData = listingTransformer.transformToAdsFormat(recordData.current.cellValuesByFieldId);
+          const fieldData = listingTransformer.transformToAdsFormat(recordId, recordData.current.cellValuesByFieldId);
   
           try {
             await adsService.updateListingDataById(recordId, fieldData);
@@ -42,8 +42,7 @@ module.exports = {
         for (const recordId of payload.destroyedRecordIds) {
   
           try {
-            console.log("todo");
-            //console.log(`Successfully deleted Google Ads asset ${recordId}`);
+            await adsService.deleteListingById(recordId);
           } catch (error) {
             console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
           }

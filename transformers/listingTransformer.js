@@ -1,11 +1,11 @@
 module.exports = {
-  transformToAdsFormat: (internalObject) => {
+  transformToAdsFormat: (recordId, internalObject) => {
     const result = {
       final_urls: internalObject["fldkkNCldg9MufIKi"]
         ? [slugToUrl(internalObject["fldkkNCldg9MufIKi"])]
         : undefined,
       dynamic_real_estate_asset: {
-        listing_id: internalObject["fldsSdgGBKmG3Stvi"],
+        listing_id: recordId,
         listing_name: internalObject["fldw8YroAQYa4eja5"]
           ? trimString(internalObject["fldw8YroAQYa4eja5"], 23)
           : undefined,
