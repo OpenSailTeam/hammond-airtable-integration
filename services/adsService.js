@@ -239,7 +239,7 @@ module.exports = {
           {
             asset_operation: {
               create: {
-                dynamic_real_estate_asset: fieldData
+                fieldData
               }
             }
           }
