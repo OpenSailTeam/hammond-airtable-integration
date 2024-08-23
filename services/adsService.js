@@ -251,6 +251,11 @@ module.exports = {
       return response;
     } catch (error) {
       console.error('Error updating listing data:', error);
+      if (error.metadata && error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')) {
+        const buffer = error.metadata.get('google.ads.googleads.v17.errors.googleadsfailure-bin')[0];
+        const decodedError = Buffer.from(buffer).toString('utf-8');
+        console.error('Decoded error details:', decodedError);
+      }
       throw error;
     }
   }
