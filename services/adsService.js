@@ -323,7 +323,6 @@ module.exports = {
       const query = `
         SELECT asset.resource_name, asset_set_asset.resource_name
         FROM asset
-        JOIN asset_set_asset ON asset.resource_name = asset_set_asset.asset
         WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
       const { results } = await service.search({ query });
