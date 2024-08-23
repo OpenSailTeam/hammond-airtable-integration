@@ -245,7 +245,7 @@ module.exports = {
       console.log('Asset creation response:', assetResponse);
 
       console.log("asset response");
-      console.log(assetResponse["mutate_operation_responses"]["asset_result"]["resource_name"]);
+      console.log(assetResponse["mutate_operation_responses"][0]["asset_result"]["resource_name"]);
       
       // Extract the resource name of the newly created asset
       const createdAssetResourceName = assetResponse["mutate_operation_responses"]["asset_result"]["resource_name"];
