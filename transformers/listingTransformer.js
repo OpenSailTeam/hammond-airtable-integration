@@ -7,7 +7,7 @@ module.exports = {
       dynamic_real_estate_asset: {
         listing_id: recordId,
         listing_name: internalObject["fldw8YroAQYa4eja5"]
-          ? trimString(internalObject["fldw8YroAQYa4eja5"], 23)
+          ? trimString(internalObject["fldw8YroAQYa4eja5"], 25)
           : undefined,
         city_name:
           internalObject["fldc7RlwdErEiIli1"]?.["valuesByLinkedRecordId"]?.[

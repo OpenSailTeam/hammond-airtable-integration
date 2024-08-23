@@ -321,7 +321,7 @@ module.exports = {
         mutate_operations: [
           {
             asset_operation: {
-              delete: {
+              remove: {
                 resource_name: assetResourceName
               }
             }
