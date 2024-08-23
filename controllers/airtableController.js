@@ -1,6 +1,6 @@
 const airtableService = require('../services/airtableService');
 const adsService = require('../services/adsService');
-const syncService = require('../services/syncService');
+const syncService = require('../services/syncServiceTest');
 
 exports.handleWebhook = async (req, res) => {
     try {
@@ -17,22 +17,27 @@ exports.handleWebhook = async (req, res) => {
 exports.handlePublish = async (req, res) => {
     try {
         console.log("test API");
-        await adsService.getAllRealEstateFeeds();
+
+        const allRecords = await airtableService.getAllRecords();
+
+        await syncService.syncToGoogleAds(allRecords);
+
+        //await adsService.getAllRealEstateFeeds();
         // Initiate the sync process
-        const webhookPayloads = await airtableService.listWebhookPayloads();
+        //const webhookPayloads = await airtableService.listWebhookPayloads();
 
-        if (webhookPayloads) {
+        //if (webhookPayloads) {
 
-            for (const payload of webhookPayloads.payloads) {
+        //    for (const payload of webhookPayloads.payloads) {
 
-                for (const tableId of Object.keys(payload.changedTablesById)) {
+        //        for (const tableId of Object.keys(payload.changedTablesById)) {
 
-                    const changes = payload.changedTablesById[tableId];
+        //            const changes = payload.changedTablesById[tableId];
 
-                    await syncService.syncToGoogleAds(changes);
-                }
-            }
-        }
+        //            await syncService.syncToGoogleAds(changes);
+        //        }
+        //    }
+        //}
 
         // If successful, send a 200 response
         res.status(200).send('Publish handled successfully');

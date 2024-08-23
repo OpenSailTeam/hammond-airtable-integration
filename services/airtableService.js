@@ -16,6 +16,26 @@ exports.getRecordById = async (id) => {
     return base(process.env.AIRTABLE_TABLE_ID).find(id);
 };
 
+// Function to fetch all records from Airtable table
+exports.getAllRecords = async () => {
+  const base = new airtable({ apiKey: process.env.AIRTABLE_ACCESS_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
+  const table = base(process.env.AIRTABLE_TABLE_ID);
+  const records = [];
+
+  try {
+      // Fetch records in pages
+      await table.select().eachPage((pageRecords, fetchNextPage) => {
+          records.push(...pageRecords);
+          fetchNextPage(); // Fetch the next page of records
+      });
+
+      return records;
+  } catch (error) {
+      logger.error('Error fetching records from Airtable:', error);
+      throw error;
+  }
+};
+
 exports.listWebhookPayloads = async () => {
   cursor += 1;
   try {
