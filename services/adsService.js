@@ -160,6 +160,55 @@ module.exports = {
   /**
    * Update the price of a specific listing by its ID
    */
+  getListingById: async (listingId) => {
+    try {
+      const authClient = await authService.getAuthClient();
+
+      const service = new GoogleAds(
+        {
+          auth: authClient,
+          developer_token: process.env.GOOGLE_DEVELOPER_TOKEN,
+        },
+        {
+          customer_id: "6090812772",
+          login_customer_id: "1892061008",
+        }
+      );
+
+      // Fetch the asset resource name based on listingId
+      const query = `
+        SELECT asset.resource_name
+        FROM asset
+        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+
+      const { results } = await service.search({ query });
+      if (!results || results.length === 0) {
+        throw new Error(`Listing with ID ${listingId} not found.`);
+      } else {
+        console.log(`Found existing listing with id: ${listingId}`);
+      }
+
+      return results;
+    } catch (error) {
+      console.error("Error during asset creation or association:", error);
+      if (
+        error.metadata &&
+        error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )
+      ) {
+        const buffer = error.metadata.get(
+          "google.ads.googleads.v17.errors.googleadsfailure-bin"
+        )[0];
+        const decodedError = Buffer.from(buffer).toString("utf-8");
+        console.error("Decoded error details:", decodedError);
+      }
+      throw error;
+    }
+  },
+  /**
+   * Update the price of a specific listing by its ID
+   */
   updateListingDataById: async (listingId, fieldData) => {
     try {
       const authClient = await authService.getAuthClient();

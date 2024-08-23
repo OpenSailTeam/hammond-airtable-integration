@@ -10,11 +10,12 @@ module.exports = {
     // Handle Created Records
     for (const record of records) {
       const fieldData = listingTransformer.transformToAdsFormat(record.id, record.fields);
-      console.log("Processing record:", record.id);
+      //console.log("Processing record:", record.id);
 
       try {
       console.log("Field data:", fieldData);
-        await adsService.createListing(fieldData);
+        //await adsService.createListing(fieldData);
+        await adsService.getListingById(record.id);
         console.log(`Successfully created Google Ads asset and updated Airtable record ${record.id}`);
       } catch (error) {
         console.error(`Error handling created record ${record.id}:`, error.response ? error.response.data : error.message);
