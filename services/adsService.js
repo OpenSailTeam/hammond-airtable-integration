@@ -187,9 +187,10 @@ module.exports = {
       }
 
       const assetResourceName = results[0].asset.resource_name;
-      const updateMask = Object.keys(fieldData["dynamic_real_estate_asset"]).map(
-        (field) => `dynamic_real_estate_asset.${field}`
-      );
+      const updateMask = Object.keys(fieldData["dynamic_real_estate_asset"])
+      .filter((field) => field !== "listing_id")
+      .map((field) => `dynamic_real_estate_asset.${field}`);
+    
 
       console.log("fieldData:");
       console.log(fieldData);
