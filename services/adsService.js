@@ -286,9 +286,9 @@ module.exports = {
     }
   },
   /**
-   * Update the price of a specific listing by its ID
+   * Remove listing by ID
    */
-  deleteListingById: async (listingId) => {
+  removeListingById: async (listingId) => {
     try {
       const authClient = await authService.getAuthClient();
 
@@ -321,9 +321,7 @@ module.exports = {
         mutate_operations: [
           {
             asset_operation: {
-              remove: {
-                resource_name: assetResourceName
-              }
+              remove: assetResourceName
             }
           }
         ],

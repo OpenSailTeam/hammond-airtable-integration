@@ -42,7 +42,7 @@ module.exports = {
         for (const recordId of payload.destroyedRecordIds) {
   
           try {
-            await adsService.deleteListingById(recordId);
+            await adsService.removeListingById(recordId);
           } catch (error) {
             console.error(`Error deleting record ${recordId}:`, error.response ? error.response.data : error.message);
           }
