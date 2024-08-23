@@ -23,7 +23,7 @@ const server = http.createServer(app);
 
 server.listen(PORT, async () => {
     console.log(`HTTP Server is running on port ${PORT}`);
-    await createWebhook();
+    //await createWebhook();
 });
 
 const rl = readline.createInterface({
@@ -34,7 +34,7 @@ const rl = readline.createInterface({
 const gracefulShutdown = async () => {
     console.log('Shutting down server...');
     try {
-        await deleteWebhook();
+        //await deleteWebhook();
         server.close(() => {
             console.log('Server closed.');
             process.exit(0);

@@ -9,11 +9,7 @@ module.exports = {
         listing_name: internalObject["Name"]
           ? trimString(internalObject["Name"], 25)
           : undefined,
-        //city_name:
-        //  internalObject["Name (from Closest Town)"]?.["valuesByLinkedRecordId"]?.[
-        //    internalObject["fldc7RlwdErEiIli1"]["linkedRecordIds"]?.[0]
-        //  ]?.[0],
-        description: internalObject["General Description"]
+        description: internalObject["General Description"] && internalObject["General Description"].trim()
           ? trimString(internalObject["General Description"], 100)
           : undefined,
         property_type: "farmland",
@@ -27,26 +23,18 @@ module.exports = {
       },
     };
 
-    // Remove undefined fields from final_urls and dynamic_real_estate_asset
-    if (!result.final_urls) delete result.final_urls;
-    result.dynamic_real_estate_asset = Object.fromEntries(
-      Object.entries(result.dynamic_real_estate_asset).filter(
-        ([_, v]) => v !== undefined
-      )
-    );
-
     return result;
   },
 };
 
 function slugToUrl(slug) {
-  return "https://hammondrealty.ca/listings/" + slug;
+  return `https://hammondrealty.ca/listings/${slug}`;
 }
 
 function formatPrice(number) {
-  return number.toString() + " CAD";
+  return `${number} CAD`;
 }
 
 function trimString(string, length) {
-  return string.substring(0, length);
+  return string ? string.substring(0, length) : '';
 }

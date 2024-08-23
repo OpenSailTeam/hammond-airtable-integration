@@ -3,9 +3,7 @@ const { GoogleAds } = require("@htdangkhoa/google-ads");
 const authService = require("./authService");
 
 module.exports = {
-  /**
-   * Test
-   */
+
   realEstateTest: async () => {
     try {
       const authClient = await authService.getAuthClient();
@@ -33,9 +31,7 @@ module.exports = {
       throw error;
     }
   },
-  /**
-   * Get all business data feeds for DYNAMIC_REAL_ESTATE assets
-   */
+
   getAllRealEstateFeeds: async () => {
     try {
       const authClient = await authService.getAuthClient();
@@ -64,9 +60,7 @@ module.exports = {
     }
   },
 
-  /**
-   * Get all business data feeds for specified data feed
-   */
+
   getAllListingsFromFeed: async () => {
     try {
       const authClient = await authService.getAuthClient();
@@ -111,9 +105,7 @@ module.exports = {
     }
   },
 
-  /**
-   * Get data for specified listing
-   */
+
   getListingDataById: async (listingId) => {
     try {
       const authClient = await authService.getAuthClient();
@@ -157,9 +149,7 @@ module.exports = {
       throw error;
     }
   },
-  /**
-   * Update the price of a specific listing by its ID
-   */
+
   getListingById: async (listingId) => {
     try {
       const authClient = await authService.getAuthClient();
@@ -178,16 +168,21 @@ module.exports = {
       // Fetch the asset resource name based on listingId
       const query = `
         SELECT asset.resource_name
-        FROM asset
-        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+        FROM asset_set_asset
+        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
       const { results } = await service.search({ query });
-      console.log("Results:")
-      console.log(results);
-
-      return results;
+      if (results[0]) {
+        if (results[0].asset){
+          if (results[0].asset.resource_name) {
+            console.log(`Found existing listing with id: ${listingId}`);
+            return results[0].asset.resource_name;
+          } 
+        } 
+      }
+      return undefined;
     } catch (error) {
-      console.error("Error during asset creation or association:", error);
+      console.error("Error during asset fetch:", error);
       if (
         error.metadata &&
         error.metadata.get(
@@ -203,9 +198,7 @@ module.exports = {
       throw error;
     }
   },
-  /**
-   * Update the price of a specific listing by its ID
-   */
+
   updateListingDataById: async (listingId, fieldData) => {
     try {
       const authClient = await authService.getAuthClient();
@@ -237,12 +230,6 @@ module.exports = {
         .filter((field) => field !== "listing_id")
         .map((field) => `dynamic_real_estate_asset.${field}`);
 
-      console.log("fieldData:");
-      console.log(fieldData);
-
-      console.log("updateMask:");
-      console.log(updateMask);
-
       fieldData.resource_name = assetResourceName;
 
       // Execute the mutation
@@ -258,7 +245,6 @@ module.exports = {
         partial_failure: false,
       });
 
-      console.log("Update response:", response);
       return response;
     } catch (error) {
       console.error("Error during asset creation or association:", error);
@@ -347,9 +333,7 @@ module.exports = {
       throw error;
     }
   },
-  /**
-   * Remove listing by ID
-   */
+
   removeListingById: async (listingId) => {
     try {
       const authClient = await authService.getAuthClient();
