@@ -241,9 +241,7 @@ module.exports = {
         mutate_operations: [
           {
             asset_operation: {
-              create: {
-                fieldData
-              }
+              create: fieldData
             }
           }
         ],
