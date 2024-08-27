@@ -9,71 +9,68 @@ module.exports = {
   syncToGoogleAds: async (records) => {
     for (const record of records) {
       const fieldData = listingTransformer.transformToAdsFormat(
-        record.fields["Webflow Item ID"],
+        record.id,
         record.fields
       );
-      if (
-        record.fields["Webflow Item ID"] != "" &&
-        record.fields["Webflow Item ID"] != undefined
-      ) {
-        console.log("Processing record:", record.fields["Webflow Item ID"]);
-        console.log("Record name:", record.fields.Name);
+      console.log("Processing record:", record.id);
+      console.log("Record name:", record.fields.Name);
 
-        try {
-          console.log(
-            `Calling getListingById(${record.fields["Webflow Item ID"]})`
-          );
+      try {
+        console.log(
+          `Calling getListingById(${record.id})`
+        );
+        if (await adsService.getListingById(record.id)) {
+          // If record is found in feed and is a draft or archived, remove it
           if (
-            await adsService.getListingById(record.fields["Webflow Item ID"])
+            record.fields["Draft"] == "true" ||
+            record.fields["Draft"] == undefined ||
+            record.fields["Archived"] == "true" ||
+            record.fields["Archived"] == undefined ||
+            record.fields["Name"] == "" ||
+            record.fields["Name"] == undefined ||
+            record.fields["Webflow Item Id"] == "" ||
+            record.fields["Webflow Item Id"] == undefined ||
+            record.fields["Slug"] == "" ||
+            record.fields["Slug"] == undefined
           ) {
-            // If record is found in feed and is a draft or archived, remove it
-            if (
-              record.fields["Draft"] == "true" ||
-              record.fields["Draft"] == undefined ||
-              record.fields["Archived"] == "true" ||
-              record.fields["Archived"] == undefined ||
-              record.fields["Name"] == "" ||
-              record.fields["Name"] == undefined
-            ) {
-              console.log(
-                `Calling removeListingById(${record.fields["Webflow Item ID"]})`
-              );
-              await adsService.removeListingById(
-                record.fields["Webflow Item ID"]
-              );
-            } else {
-              // If record is found in feed and is not a draft or archived, update it
-              console.log(
-                `Calling updateListingDataById(${record.fields["Webflow Item ID"]}, ${fieldData})`
-              );
-              await adsService.updateListingDataById(
-                record.fields["Webflow Item ID"],
-                fieldData
-              );
-            }
+            console.log(
+              `Calling removeListingById(${record.id})`
+            );
+            await adsService.removeListingById(
+              record.fields["Webflow Item ID"]
+            );
           } else {
-            // If record is not found in feed and is a draft or archived, skip it
-            if (
-              record.fields["Draft"] == "true" ||
-              record.fields["Draft"] == undefined ||
-              record.fields["Archived"] == "true" ||
-              record.fields["Archived"] == undefined ||
-              record.fields["Name"] == "" ||
-              record.fields["Name"] == undefined
-            ) {
-              //console.log(`Skipping record: ${record.id}`);
-            } else {
-              // If record is not found in feed and is not a draft or archived, create it
-              console.log(`Calling createListing(${fieldData})`);
-              await adsService.createListing(fieldData);
-            }
+            // If record is found in feed and is not a draft or archived, update it
+            console.log(
+              `Calling updateListingDataById(${record.id}, ${fieldData})`
+            );
+            await adsService.updateListingDataById(
+              record.fields["Webflow Item ID"],
+              fieldData
+            );
           }
-        } catch (error) {
-          console.error(
-            `Error handling record ${record.fields["Webflow Item ID"]}:`,
-            error.response ? error.response.data : error.message
-          );
+        } else {
+          // If record is not found in feed and is a draft or archived, skip it
+          if (
+            record.fields["Draft"] == "true" ||
+            record.fields["Draft"] == undefined ||
+            record.fields["Archived"] == "true" ||
+            record.fields["Archived"] == undefined ||
+            record.fields["Name"] == "" ||
+            record.fields["Name"] == undefined
+          ) {
+            //console.log(`Skipping record: ${record.id}`);
+          } else {
+            // If record is not found in feed and is not a draft or archived, create it
+            console.log(`Calling createListing(${fieldData})`);
+            await adsService.createListing(fieldData);
+          }
         }
+      } catch (error) {
+        console.error(
+          `Error handling record ${record.fields["Webflow Item ID"]}:`,
+          error.response ? error.response.data : error.message
+        );
       }
     }
   },
