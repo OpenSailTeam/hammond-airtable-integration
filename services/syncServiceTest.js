@@ -13,7 +13,7 @@ module.exports = {
         record.fields
       );
       if (
-        record.fields["Webflow Item ID"] != "" ||
+        record.fields["Webflow Item ID"] != "" &&
         record.fields["Webflow Item ID"] != undefined
       ) {
         console.log("Processing record:", record.fields["Webflow Item ID"]);
