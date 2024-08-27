@@ -20,9 +20,9 @@ module.exports = {
       );
 
       const query = `
-        SELECT asset_set.resource_name, asset_set.id, asset_set.type, asset_set.status
-        FROM asset_set
-        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
+        SELECT asset_set_asset.resource_name, asset_set_asset.asset_set, asset_set_asset.asset, asset_set_asset.status, asset_set.resource_name, asset_set.name, asset_set.id, asset_set.type, asset_set.status, asset.dynamic_real_estate_asset.listing_id
+        FROM asset_set_asset
+        WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE' AND asset_set_asset.status = 'ENABLED'`;
 
       const response = await service.search({ query });
       return response;
@@ -48,7 +48,7 @@ module.exports = {
       );
 
       const query = `
-        SELECT asset_set.resource_name, asset_set.id, asset_set.type, asset_set.status
+        SELECT asset_set.resource_name, asset_set.type, asset_set.status, asset_set.name, asset_set.merchant_center_feed.merchant_id, asset_set.merchant_center_feed.feed_label, asset_set.location_set.location_ownership_type, asset_set.location_set.chain_location_set.relationship_type, asset_set.location_set.business_profile_location_set.listing_id_filters, asset_set.location_set.business_profile_location_set.label_filters, asset_set.location_set.business_profile_location_set.business_name_filter, asset_set.location_group_parent_asset_set_id, asset_set.id, asset_set.hotel_property_data.partner_name, asset_set.hotel_property_data.hotel_center_id, asset_set.business_profile_location_group.dynamic_business_profile_location_group_filter.listing_id_filters, asset_set.business_profile_location_group.dynamic_business_profile_location_group_filter.label_filters, asset_set.business_profile_location_group.dynamic_business_profile_location_group_filter.business_name_filter.filter_type, asset_set.business_profile_location_group.dynamic_business_profile_location_group_filter.business_name_filter.business_name
         FROM asset_set
         WHERE asset_set.type = 'DYNAMIC_REAL_ESTATE'`;
 
@@ -93,9 +93,10 @@ module.exports = {
         asset.dynamic_real_estate_asset.listing_type,
         asset.dynamic_real_estate_asset.price,
         asset.dynamic_real_estate_asset.property_type, 
-        asset.dynamic_real_estate_asset.similar_listing_ids
+        asset.dynamic_real_estate_asset.similar_listing_ids,
+        asset_set_asset.status
         FROM asset_set_asset
-        WHERE asset_set.id = '8367326007'`;
+        WHERE asset_set.id = '8367326007' AND asset_set_asset.status = 'ENABLED'`;
 
       const response = await service.search({ query });
       return response;
@@ -140,7 +141,7 @@ module.exports = {
         asset.dynamic_real_estate_asset.property_type, 
         asset.dynamic_real_estate_asset.similar_listing_ids
         FROM asset_set_asset
-        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}' AND asset_set_asset.status = 'ENABLED'`;
 
       const response = await service.search({ query });
       return response;
@@ -169,7 +170,7 @@ module.exports = {
       const query = `
         SELECT asset.resource_name
         FROM asset_set_asset
-        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+        WHERE asset_set.id = '8367326007' AND asset.dynamic_real_estate_asset.listing_id = '${listingId}' AND asset_set_asset.status = 'ENABLED'`;
 
       const { results } = await service.search({ query });
       if (results[0]) {
@@ -218,7 +219,7 @@ module.exports = {
       const query = `
         SELECT asset.resource_name
         FROM asset
-        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
+        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}' AND asset_set_asset.status = 'ENABLED'`;
 
       const { results } = await service.search({ query });
       if (!results || results.length === 0) {
@@ -389,13 +390,13 @@ module.exports = {
         partial_failure: false,
       });
   
-      console.log('Remove response:', response);
+      console.log('Remove response:', response.mutate_operation_responses[0].asset_set_asset_result);
   
       // Step 4: Verify the removal by re-querying the asset_set_asset
       const verificationQuery = `
         SELECT asset_set_asset.resource_name
         FROM asset_set_asset
-        WHERE asset_set_asset.asset = '${assetResourceName}'`;
+        WHERE asset_set_asset.asset = '${assetResourceName}' AND asset_set_asset.status = 'ENABLED'`;
   
       const verificationResult = await service.search({ query: verificationQuery });
       if (verificationResult.results.length === 0) {

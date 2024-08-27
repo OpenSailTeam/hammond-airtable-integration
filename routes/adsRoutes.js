@@ -14,4 +14,6 @@ router.get('/update-listing', adsController.updateListingDataById);
 
 router.get('/real-estate-test', adsController.realEstateTest);
 
+router.get('/remove-listing', adsController.removeListingById);
+
 module.exports = router;

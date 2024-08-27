@@ -46,7 +46,7 @@ exports.getAllListingsFromFeed = async (req, res) => {
  */
 exports.getListingDataById = async (req, res) => {
     try {
-      const feeds = await adsService.getListingDataById("65a946859824a73cd3f87e43");
+      const feeds = await adsService.getListingDataById("recLn9sVnmzvS8Iec");
       res.status(200).json(feeds);
     } catch (error) {
       console.error('Error fetching listing:', error);
@@ -59,7 +59,7 @@ exports.getListingDataById = async (req, res) => {
  */
   exports.updateListingDataById = async (req, res) => {
     try {
-      const feeds = await adsService.updateListingDataById("65a946859824a73cd3f87e43");
+      const feeds = await adsService.updateListingDataById("recLn9sVnmzvS8Iec");
       res.status(200).json(feeds);
     } catch (error) {
       console.error('Error updating listing:', error);
@@ -68,11 +68,11 @@ exports.getListingDataById = async (req, res) => {
   };
 
   /**
- * Update listing by Id
+ * Remove listing by Id
  */
-  exports.updateListingDataById = async (req, res) => {
+  exports.removeListingById = async (req, res) => {
     try {
-      const feeds = await adsService.updateListingDataById("65a946859824a73cd3f87e43");
+      const feeds = await adsService.removeListingById("rectprzyncGUhm9Lg");
       res.status(200).json(feeds);
     } catch (error) {
       console.error('Error updating listing:', error);
