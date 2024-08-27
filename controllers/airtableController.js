@@ -16,29 +16,9 @@ exports.handleWebhook = async (req, res) => {
 
 exports.handlePublish = async (req, res) => {
     try {
-        console.log("test API");
-
+        console.log("Run Publish");
         const allRecords = await airtableService.getAllRecords();
-
         await syncService.syncToGoogleAds(allRecords);
-
-        //await adsService.getAllRealEstateFeeds();
-        // Initiate the sync process
-        //const webhookPayloads = await airtableService.listWebhookPayloads();
-
-        //if (webhookPayloads) {
-
-        //    for (const payload of webhookPayloads.payloads) {
-
-        //        for (const tableId of Object.keys(payload.changedTablesById)) {
-
-        //            const changes = payload.changedTablesById[tableId];
-
-        //            await syncService.syncToGoogleAds(changes);
-        //        }
-        //    }
-        //}
-
         // If successful, send a 200 response
         res.status(200).send('Publish handled successfully');
     } catch (error) {

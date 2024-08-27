@@ -2,7 +2,8 @@ const http = require('http');
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const { createWebhook, deleteWebhook } = require('./services/airtableService');
+const { getAllRecords, createWebhook, deleteWebhook } = require('./services/airtableService');
+const { syncToGoogleAds } = require('./services/syncServiceTest');
 const readline = require('readline');
 
 // Middleware
@@ -23,7 +24,9 @@ const server = http.createServer(app);
 
 server.listen(PORT, async () => {
     console.log(`HTTP Server is running on port ${PORT}`);
-    //await createWebhook();
+    const allRecords = await getAllRecords();
+    await syncToGoogleAds(allRecords);
+    gracefulShutdown();
 });
 
 const rl = readline.createInterface({

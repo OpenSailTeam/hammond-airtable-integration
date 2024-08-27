@@ -219,7 +219,7 @@ module.exports = {
       const query = `
         SELECT asset.resource_name
         FROM asset
-        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}' AND asset_set_asset.status = 'ENABLED'`;
+        WHERE asset.dynamic_real_estate_asset.listing_id = '${listingId}'`;
 
       const { results } = await service.search({ query });
       if (!results || results.length === 0) {
@@ -402,7 +402,7 @@ module.exports = {
       if (verificationResult.results.length === 0) {
         console.log('AssetSetAsset successfully removed.');
       } else {
-        console.log('AssetSetAsset still exists:', verificationResult.results);
+        console.error('AssetSetAsset still exists:', verificationResult.results);
       }
   
       return response;

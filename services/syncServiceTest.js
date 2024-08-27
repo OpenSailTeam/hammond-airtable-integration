@@ -29,10 +29,12 @@ module.exports = {
           ) {
             console.log(`Calling removeListingById(${record.id})`)
             await adsService.removeListingById(record.id);
+            console.log(`Record removed successfully: ${record.id}`, '\n');
           } else {
             // If record is found in feed and is not a draft or archived, update it
             console.log(`Calling updateListingDataById(${record.id}, ${fieldData})`)
             await adsService.updateListingDataById(record.id, fieldData);
+            console.log(`Record updated successfully: ${record.id}`, '\n');
           }
         } else {
           // If record is not found in feed and is a draft or archived, skip it
@@ -44,11 +46,12 @@ module.exports = {
             record.fields["Name"] == "" ||
             record.fields["Name"] == undefined
           ) {
-            //console.log(`Skipping record: ${record.id}`);
+            console.log(`Record not found in feed and is draft or archived, skipping record: ${record.id}`, '\n');
           } else {
             // If record is not found in feed and is not a draft or archived, create it
             console.log(`Calling createListing(${fieldData})`)
             await adsService.createListing(fieldData);
+            console.log(`Record created successfully: ${record.id}`, '\n');
           }
         }
       } catch (error) {
