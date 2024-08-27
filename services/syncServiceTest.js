@@ -9,10 +9,10 @@ module.exports = {
   syncToGoogleAds: async (records) => {
     for (const record of records) {
       const fieldData = listingTransformer.transformToAdsFormat(
-        record.id,
+        record.fields["Webflow Item ID"],
         record.fields
       );
-      console.log("Processing record:", record.id);
+      console.log("Processing record:", record.fields["Webflow Item ID"]);
       console.log("Record name:", record.fields.Name);
 
       try {
