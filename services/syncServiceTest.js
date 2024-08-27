@@ -16,9 +16,7 @@ module.exports = {
       console.log("Record name:", record.fields.Name);
 
       try {
-        console.log(
-          `Calling getListingById(${record.id})`
-        );
+        console.log(`Calling getListingById(${record.id})`)
         if (await adsService.getListingById(record.id)) {
           // If record is found in feed and is a draft or archived, remove it
           if (
@@ -27,27 +25,14 @@ module.exports = {
             record.fields["Archived"] == "true" ||
             record.fields["Archived"] == undefined ||
             record.fields["Name"] == "" ||
-            record.fields["Name"] == undefined ||
-            record.fields["Webflow Item Id"] == "" ||
-            record.fields["Webflow Item Id"] == undefined ||
-            record.fields["Slug"] == "" ||
-            record.fields["Slug"] == undefined
+            record.fields["Name"] == undefined
           ) {
-            console.log(
-              `Calling removeListingById(${record.id})`
-            );
-            await adsService.removeListingById(
-              record.fields["Webflow Item ID"]
-            );
+            console.log(`Calling removeListingById(${record.id})`)
+            await adsService.removeListingById(record.id);
           } else {
             // If record is found in feed and is not a draft or archived, update it
-            console.log(
-              `Calling updateListingDataById(${record.id}, ${fieldData})`
-            );
-            await adsService.updateListingDataById(
-              record.fields["Webflow Item ID"],
-              fieldData
-            );
+            console.log(`Calling updateListingDataById(${record.id}, ${fieldData})`)
+            await adsService.updateListingDataById(record.id, fieldData);
           }
         } else {
           // If record is not found in feed and is a draft or archived, skip it
@@ -62,13 +47,13 @@ module.exports = {
             //console.log(`Skipping record: ${record.id}`);
           } else {
             // If record is not found in feed and is not a draft or archived, create it
-            console.log(`Calling createListing(${fieldData})`);
+            console.log(`Calling createListing(${fieldData})`)
             await adsService.createListing(fieldData);
           }
         }
       } catch (error) {
         console.error(
-          `Error handling record ${record.fields["Webflow Item ID"]}:`,
+          `Error handling record ${record.id}:`,
           error.response ? error.response.data : error.message
         );
       }
