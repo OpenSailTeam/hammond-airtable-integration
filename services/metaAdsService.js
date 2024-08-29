@@ -1,6 +1,14 @@
-const { getAllRecords, createWebhook, deleteWebhook } = require('./services/airtableService');
-const { syncToGoogleAds, syncToMetaAds } = require('./services/syncServiceTest');
+const { getAllRecords } = require('./airtableService');
+const { syncToMetaAds } = require('./syncServiceTest');
 
-const allRecords = await getAllRecords();
-await syncToMetaAds(allRecords);
-console.log(`New feed file available`);
+async function runMetaAdsService() {
+    try {
+        const allRecords = await getAllRecords();
+        await syncToMetaAds(allRecords);
+        console.log(`New feed file available`);
+    } catch (error) {
+        console.error('Error running Meta Ads service:', error);
+    }
+}
+
+runMetaAdsService();
