@@ -1,5 +1,47 @@
 module.exports = {
-  transformToAdsFormat: (recordId, internalObject) => {
+  transformToMetaFormat: (recordId, internalObject) => {
+    const result = {
+        home_listing_id: recordId,
+        name: internalObject["name"]
+          ? trimString(internalObject["name"], 25)
+          : undefined,
+          availability: internalObject["availability"]
+          ? internalObject["availability"]
+          : undefined,
+        description: internalObject["description"]
+          ? trimString(internalObject["description"], 5000)
+          : undefined,
+        property_type: "land",
+        availability: internalObject["Listing Status (New)"] && 
+          availabilityMapping[internalObject["Listing Status (New)"][0]] &&
+          internalObject["Service Type"] &&
+          availabilityMapping[internalObject["Listing Status (New)"][0]][internalObject["Service Type"][0]]
+          ? availabilityMapping[internalObject["Listing Status (New)"][0]][internalObject["Service Type"][0]]
+          : undefined,
+        address: {
+          city: internalObject["Closest Town"] ? internalObject["Closest Town"] : undefined,
+          region: "Saskatchewan",
+          country: "Canada",
+        },
+        latitude: internalObject["Coordinates"]
+          ? parseFloat(internalObject["Coordinates"].split(",")[0])
+          : undefined,
+        longitude: internalObject["Coordinates"]
+          ? parseFloat(internalObject["Coordinates"].split(",")[1])
+          : undefined,
+        price: internalObject["Price"]
+          ? formatPrice(internalObject["Price"])
+          : undefined,
+        image: internalObject["Webflow Image URL"]
+          ? imageObject(internalObject["Webflow Image URL"], trimString(internalObject["name"], 25))
+          : undefined,
+        status: "active"
+    };
+  
+    return result;
+  },
+  
+  transformToGoogleFormat: (recordId, internalObject) => {
     const result = {
       final_urls: internalObject["Slug"]
         ? [slugToUrl(internalObject["Slug"])]
@@ -40,15 +82,15 @@ module.exports = {
 
 function slugToUrl(slug) {
   return `https://hammondrealty.ca/listings/${slug}`;
-}
+};
 
 function formatPrice(number) {
   return `${number} CAD`;
-}
+};
 
 function trimString(string, length) {
   return string ? string.substring(0, length) : '';
-}
+};
 
 const statusServiceMapping = {
   'recM9mTgZ2PBOjvUC': {
@@ -68,4 +110,25 @@ const statusServiceMapping = {
     'recJPEBzZT1VXQUxT': 'Leased',
     'recO7KhyAKDypJ4dF': 'Fulfilled Buyer Contract',
   },
+};
+
+const availabilityMapping = {
+  'recM9mTgZ2PBOjvUC': {
+    'recnvvs22bNVHt6nB': 'for_sale',
+    'recC0MUZAQzP8VGbm': 'for_sale',
+    'reciaqpuSjraedHCE': 'for_sale',
+    'recJPEBzZT1VXQUxT': 'for_rent',
+  },
+  'recjAvvcQYE4AsK9a': {
+    'recnvvs22bNVHt6nB': 'sale_pending',
+    'recJPEBzZT1VXQUxT': 'sale_pending',
+  },
+  'recDdogg7WL8iRLFd': {
+    'recnvvs22bNVHt6nB': 'off_market',
+    'recJPEBzZT1VXQUxT': 'off_market',
+  },
+};
+
+function imageObject(image, tag) {
+  return {image, tag};
 };

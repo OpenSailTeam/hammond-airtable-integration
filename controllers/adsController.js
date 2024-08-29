@@ -1,4 +1,4 @@
-const adsService = require('../services/adsService');
+const adsService = require('../services/googleAdsService');
 
 // Controller for handling business data feeds for DYNAMIC_REAL_ESTATE assets
 
