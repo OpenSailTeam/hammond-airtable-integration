@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const { getAllRecords, createWebhook, deleteWebhook } = require('./services/airtableService');
-const { syncToGoogleAds } = require('./services/syncServiceTest');
+const { syncToGoogleAds, syncToMetaAds } = require('./services/syncServiceTest');
 const readline = require('readline');
 
 // Middleware
@@ -11,12 +11,14 @@ app.use(express.json());
 
 // Routes
 const airtableRoutes = require('./routes/airtableRoutes');
-const adsRoutes = require('./routes/adsRoutes');
+const googleAdsRoutes = require('./routes/googleAdsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const feedRoutes = require('./routes/feedRoutes');
 
 app.use('/api/airtable', airtableRoutes);
-app.use('/api/ads', adsRoutes);
+app.use('/api/ads', googleAdsRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/feed', feedRoutes);
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;
@@ -25,8 +27,9 @@ const server = http.createServer(app);
 server.listen(PORT, async () => {
     console.log(`HTTP Server is running on port ${PORT}`);
     const allRecords = await getAllRecords();
-    await syncToGoogleAds(allRecords);
-    gracefulShutdown();
+    await syncToMetaAds(allRecords);
+    console.log(`New feed file available`);
+    //gracefulShutdown();
 });
 
 const rl = readline.createInterface({

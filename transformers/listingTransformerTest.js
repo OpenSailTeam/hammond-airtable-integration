@@ -2,40 +2,40 @@ module.exports = {
   transformToMetaFormat: (recordId, internalObject) => {
     const result = {
         home_listing_id: recordId,
-        name: internalObject["name"]
-          ? trimString(internalObject["name"], 25)
+        name: internalObject['Name']
+          ? trimString(internalObject['Name'], 100)
           : undefined,
-          availability: internalObject["availability"]
-          ? internalObject["availability"]
+        description: internalObject['General Description']
+          ? trimString(internalObject['General Description'], 5000)
           : undefined,
-        description: internalObject["description"]
-          ? trimString(internalObject["description"], 5000)
-          : undefined,
-        property_type: "land",
-        availability: internalObject["Listing Status (New)"] && 
-          availabilityMapping[internalObject["Listing Status (New)"][0]] &&
-          internalObject["Service Type"] &&
-          availabilityMapping[internalObject["Listing Status (New)"][0]][internalObject["Service Type"][0]]
-          ? availabilityMapping[internalObject["Listing Status (New)"][0]][internalObject["Service Type"][0]]
+        property_type: 'land',
+        availability: internalObject['Listing Status (New)'] && 
+          availabilityMapping[internalObject['Listing Status (New)'][0]] &&
+          internalObject['Service Type'] &&
+          availabilityMapping[internalObject['Listing Status (New)'][0]][internalObject['Service Type'][0]]
+          ? availabilityMapping[internalObject['Listing Status (New)'][0]][internalObject['Service Type'][0]]
           : undefined,
         address: {
-          city: internalObject["Closest Town"] ? internalObject["Closest Town"] : undefined,
-          region: "Saskatchewan",
-          country: "Canada",
+          city: internalObject['Name (from Closest Town)'] ? internalObject['Name (from Closest Town)'][0] : undefined,
+          region: 'Saskatchewan',
+          country: 'Canada',
         },
-        latitude: internalObject["Coordinates"]
-          ? parseFloat(internalObject["Coordinates"].split(",")[0])
+        latitude: internalObject['Coordinates']
+          ? parseFloat(internalObject['Coordinates'].split(',')[0])
           : undefined,
-        longitude: internalObject["Coordinates"]
-          ? parseFloat(internalObject["Coordinates"].split(",")[1])
+        longitude: internalObject['Coordinates']
+          ? parseFloat(internalObject['Coordinates'].split(',')[1])
           : undefined,
-        price: internalObject["Price"]
-          ? formatPrice(internalObject["Price"])
+        neighborhood: internalObject['Name (from Rural Municipality)']
+          ? internalObject['Name (from Rural Municipality)'][0]
           : undefined,
-        image: internalObject["Webflow Image URL"]
-          ? imageObject(internalObject["Webflow Image URL"], trimString(internalObject["name"], 25))
+        price: internalObject['Price']
+          ? formatPrice(internalObject['Price'])
           : undefined,
-        status: "active"
+        image: internalObject['Webflow Image URL']
+          ? imageObject(internalObject['Webflow Image URL'], trimString(internalObject['Name'], 25))
+          : undefined,
+        status: 'active'
     };
   
     return result;
@@ -67,8 +67,8 @@ module.exports = {
         price: internalObject["Price (P)"]
           ? formatPrice(internalObject["Price (P)"])
           : undefined,
-        city_name: internalObject["Closest Town"]
-          ? internalObject["Closest Town"][0]
+        city_name: internalObject['Name (from Closest Town)']
+          ? internalObject['Name (from Closest Town)'][0]
           : undefined,
         image_url: internalObject["Webflow Image URL"]
           ? internalObject["Webflow Image URL"]
@@ -129,6 +129,6 @@ const availabilityMapping = {
   },
 };
 
-function imageObject(image, tag) {
-  return {image, tag};
+function imageObject(url, tag) {
+  return {url, tag};
 };

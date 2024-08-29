@@ -1,12 +1,15 @@
-// src/services/adsSyncService.js
 const adsService = require("./googleAdsService");
 const listingTransformer = require("../transformers/listingTransformerTest");
+const xmlbuilder = require('xmlbuilder');
+const fs = require('fs');
 
 module.exports = {
   /**
    * Sync data with Meta XML
    */
   syncToMetaAds: async (records) => {
+    const root = xmlbuilder.create('listings', { encoding: 'UTF-8' });
+
     for (const record of records) {
       const fieldData = listingTransformer.transformToMetaFormat(
         record.id,
@@ -27,10 +30,34 @@ module.exports = {
         ) {
           console.log(`Skipping record: ${record.id}`);
         } else {
-          console.log(
-            `Adding record to XML file: ${record.id}, ${fieldData}`
-          );
-          
+          console.log(`Adding record to XML file: ${record.id}`);
+
+          const listing = root.ele('listing');
+          for (const [key, value] of Object.entries(fieldData)) {
+            if (value !== undefined) {
+              if (key === 'address') {
+                const addressNode = listing.ele('address', { format: 'simple' });
+                for (const [addrKey, addrValue] of Object.entries(value)) {
+                  if (addrValue !== undefined) {
+                    addressNode.ele('component', { name: addrKey }, addrValue);
+                  }
+                }
+              } else if (key === 'image') {
+                const imageNode = listing.ele('image');
+                
+                if (value.url) {
+                  imageNode.ele('url').text(value.url);
+                }
+                
+                if (value.tag) {
+                  imageNode.ele('tag').text(value.tag);
+                }
+              } else {
+                listing.ele(key, value);
+              }
+            }
+          }
+
           console.log(`Added record successfully: ${record.id}`, "\n");
         }
       } catch (error) {
@@ -40,6 +67,11 @@ module.exports = {
         );
       }
     }
+
+    const xmlString = root.end({ pretty: true });
+    console.log(xmlString);
+
+    fs.writeFileSync('./output/meta_feed.xml', xmlString);
   },
   /**
    * Sync data with Google Ads
