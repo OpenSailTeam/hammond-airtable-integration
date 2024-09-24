@@ -29,9 +29,12 @@ module.exports = {
         neighborhood: internalObject['Name (from Rural Municipality)']
           ? internalObject['Name (from Rural Municipality)'][0]
           : undefined,
-        price: internalObject['Price']
-          ? formatPrice(internalObject['Price'])
+        price: internalObject['Price (P)']
+          ? formatPrice(internalObject['Price (P)'])
           : undefined,
+        url: internalObject['Link']
+          ? formatPrice(internalObject['Link'])
+          : undefined,  
         image: internalObject['Webflow Image URL']
           ? imageObject(internalObject['Webflow Image URL'], trimString(internalObject['Name'], 25))
           : undefined,
