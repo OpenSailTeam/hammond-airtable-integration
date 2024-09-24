@@ -17,7 +17,7 @@ module.exports = {
       );
       console.log("Processing record:", record.id);
       console.log("Record name:", record.fields.Name);
-
+    
       try {
         if (
           record.fields["Draft"] == "true" ||
@@ -26,12 +26,18 @@ module.exports = {
           record.fields["Archived"] == undefined ||
           record.fields["Name"] == "" ||
           record.fields["Name"] == undefined ||
+          record.fields["Link"] == undefined ||
           record.fields["Service Type"][0] == "recO7KhyAKDypJ4dF"
         ) {
           console.log(`Skipping record: ${record.id}`);
         } else {
+          // New validation check
+          if (!isValidListing(fieldData)) {
+            console.log(`Skipping record due to missing required fields: ${record.id}`);
+            continue; // Skip to the next record
+          }
           console.log(`Adding record to XML file: ${record.id}`);
-
+    
           const listing = root.ele('listing');
           for (const [key, value] of Object.entries(fieldData)) {
             if (value !== undefined) {
@@ -57,7 +63,7 @@ module.exports = {
               }
             }
           }
-
+    
           console.log(`Added record successfully: ${record.id}`, "\n");
         }
       } catch (error) {
@@ -66,7 +72,7 @@ module.exports = {
           error.response ? error.response.data : error.message
         );
       }
-    }
+    }    
 
     const xmlString = root.end({ pretty: true });
     console.log(xmlString);
@@ -138,3 +144,45 @@ module.exports = {
     }
   },
 };
+
+function getNestedFieldValue(obj, fieldPath) {
+  const fields = fieldPath.split('.');
+  let value = obj;
+  for (const field of fields) {
+    if (value && typeof value === 'object' && field in value) {
+      value = value[field];
+    } else {
+      return undefined;
+    }
+  }
+  return value;
+}
+
+function isValidListing(fieldData) {
+  const requiredFields = [
+    'home_listing_id',
+    'name',
+    'availability',
+    'address',
+    'address.city',
+    'address.region',
+    'address.country',
+    'address.postal_code',
+    'latitude',
+    'longitude',
+    'price',
+    'image',
+    'image.url',
+    'url'
+  ];
+
+  for (const field of requiredFields) {
+    const value = getNestedFieldValue(fieldData, field);
+    if (value === undefined || value === null || value === '') {
+      return false;
+    }
+  }
+
+  return true;
+}
+

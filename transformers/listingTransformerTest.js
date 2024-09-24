@@ -19,6 +19,7 @@ module.exports = {
           city: internalObject['Name (from Closest Town)'] ? internalObject['Name (from Closest Town)'][0] : undefined,
           region: 'Saskatchewan',
           country: 'Canada',
+          postal_code: 'S0A 0A0'
         },
         latitude: internalObject['Coordinates']
           ? parseFloat(internalObject['Coordinates'].split(',')[0])
