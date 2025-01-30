@@ -34,7 +34,7 @@ module.exports = {
           ? formatPrice(internalObject['Price (P)'])
           : undefined,
         url: internalObject['Link']
-          ? formatPrice(internalObject['Link'])
+          ? internalObject['Link']
           : undefined,  
         image: internalObject['Webflow Image URL']
           ? imageObject(internalObject['Webflow Image URL'], trimString(internalObject['Name'], 25))
