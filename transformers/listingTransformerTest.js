@@ -39,7 +39,22 @@ module.exports = {
         image: internalObject['Webflow Image URL']
           ? imageObject(internalObject['Webflow Image URL'], trimString(internalObject['Name'], 25))
           : undefined,
-        status: 'active'
+        status: 'active'  // Explicitly set status for active listings
+    };
+  
+    return result;
+  },
+  
+  transformToMetaFormatArchived: (recordId, internalObject) => {
+    const result = {
+        home_listing_id: recordId,
+        name: internalObject['Name']
+          ? trimString(internalObject['Name'], 100)
+          : `Archived Listing ${recordId}`,
+        status: 'archived',  // This is the correct field for removal
+        url: internalObject['Link']
+          ? internalObject['Link']
+          : undefined
     };
   
     return result;

@@ -1,5 +1,5 @@
 const { getAllRecords } = require('./airtableService');
-const { syncToMetaAds } = require('./syncServiceTest');
+const { syncToMetaAds } = require('./syncService');
 
 async function runMetaAdsService() {
     try {

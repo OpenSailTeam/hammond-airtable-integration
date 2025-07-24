@@ -1,6 +1,6 @@
 const airtableService = require('../services/airtableService');
 const adsService = require('../services/googleAdsService');
-const syncService = require('../services/syncServiceTest');
+const syncService = require('../services/syncService');
 
 exports.handleWebhook = async (req, res) => {
     try {
