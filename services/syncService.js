@@ -1,5 +1,5 @@
 const adsService = require("./googleAdsService");
-const listingTransformer = require("../transformers/listingTransformerTest");
+const listingTransformer = require("../transformers/listingTransformer");
 const xmlbuilder = require('xmlbuilder');
 const fs = require('fs');
 
@@ -13,7 +13,8 @@ module.exports = {
     for (const record of records) {
       const fieldData = listingTransformer.transformToMetaFormat(
         record.id,
-        record.fields
+        record.fields,
+        'active'  // Explicitly pass 'active' status for consistency
       );
       console.log("Processing record:", record.id);
       console.log("Record name:", record.fields.Name);
@@ -42,16 +43,36 @@ module.exports = {
 
         if (shouldBeArchived) {
           // Generate archived listing data and add to XML for removal
-          const archivedFieldData = listingTransformer.transformToMetaFormatArchived(
+          const archivedFieldData = listingTransformer.transformToMetaFormat(
             record.id,
-            record.fields
+            record.fields,
+            'archived'  // Pass 'archived' status
           );
           console.log(`Adding archived/draft record for removal: ${record.id}`);
           
           const listing = root.ele('listing');
           for (const [key, value] of Object.entries(archivedFieldData)) {
             if (value !== undefined) {
-              listing.ele(key, value);
+              if (key === 'address') {
+                const addressNode = listing.ele('address', { format: 'simple' });
+                for (const [addrKey, addrValue] of Object.entries(value)) {
+                  if (addrValue !== undefined) {
+                    addressNode.ele('component', { name: addrKey }, addrValue);
+                  }
+                }
+              } else if (key === 'image') {
+                const imageNode = listing.ele('image');
+                
+                if (value.url) {
+                  imageNode.ele('url').text(value.url);
+                }
+                
+                if (value.tag) {
+                  imageNode.ele('tag').text(value.tag);
+                }
+              } else {
+                listing.ele(key, value);
+              }
             }
           }
           

@@ -83,8 +83,8 @@ async function generateTestXMLWithProductionData() {
             // Restore original function
             fs.writeFileSync = originalWriteFileSync;
             
-            // Write to our test file
-            fs.writeFileSync('./output/meta_feed_NEW_LOGIC.xml', xmlContent);
+            // Write to our test file with simplified approach
+            fs.writeFileSync('./output/meta_feed_SIMPLIFIED_LOGIC.xml', xmlContent);
             
             return xmlContent;
         };
@@ -92,11 +92,11 @@ async function generateTestXMLWithProductionData() {
         // Step 3: Generate new XML with updated logic
         await testSyncToMetaAds(productionRecords);
         
-        console.log('✅ New XML generated: ./output/meta_feed_NEW_LOGIC.xml');
+        console.log('✅ Simplified XML generated: ./output/meta_feed_SIMPLIFIED_LOGIC.xml');
         console.log('✅ Original production data: UNCHANGED');
         console.log('\n🔍 You can now compare:');
-        console.log('   - Original: ./output/meta_feed_previous.xml');
-        console.log('   - New Logic: ./output/meta_feed_NEW_LOGIC.xml');
+        console.log('   - Previous (complex): ./output/meta_feed_NEW_LOGIC.xml');
+        console.log('   - New (simplified): ./output/meta_feed_SIMPLIFIED_LOGIC.xml');
         
     } catch (error) {
         console.error('❌ Error in testing:', error);
