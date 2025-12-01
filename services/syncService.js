@@ -42,41 +42,8 @@ module.exports = {
         }
 
         if (shouldBeArchived) {
-          // Generate archived listing data and add to XML for removal
-          const archivedFieldData = listingTransformer.transformToMetaFormat(
-            record.id,
-            record.fields,
-            'archived'  // Pass 'archived' status
-          );
-          console.log(`Adding archived/draft record for removal: ${record.id}`);
-          
-          const listing = root.ele('listing');
-          for (const [key, value] of Object.entries(archivedFieldData)) {
-            if (value !== undefined) {
-              if (key === 'address') {
-                const addressNode = listing.ele('address', { format: 'simple' });
-                for (const [addrKey, addrValue] of Object.entries(value)) {
-                  if (addrValue !== undefined) {
-                    addressNode.ele('component', { name: addrKey }, addrValue);
-                  }
-                }
-              } else if (key === 'image') {
-                const imageNode = listing.ele('image');
-                
-                if (value.url) {
-                  imageNode.ele('url').text(value.url);
-                }
-                
-                if (value.tag) {
-                  imageNode.ele('tag').text(value.tag);
-                }
-              } else {
-                listing.ele(key, value);
-              }
-            }
-          }
-          
-          console.log(`Added record for removal: ${record.id}`, "\n");
+          console.log(`Skipping archived/draft record: ${record.id}`);
+          continue; // Skip to the next record
         } else {
           // New validation check for active listings
           if (!isValidListing(fieldData)) {
